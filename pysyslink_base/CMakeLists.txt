@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15...3.27)
-project(litgen_template VERSION "0.0.1")
+project(pysyslink_base VERSION "0.0.1")
 
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 include(litgen_cmake/litgen_cmake.cmake)
 

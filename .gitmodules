@@ -1,0 +1,3 @@
+[submodule "pysyslink_base/src/cpp_libraries/PySysLinkBase"]
+	path = pysyslink_base/src/cpp_libraries/PySysLinkBase
+	url = git@github.com:PySysLink/PySysLinkBase.git
