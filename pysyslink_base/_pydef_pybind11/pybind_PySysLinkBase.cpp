@@ -132,6 +132,26 @@ public:
 
 namespace PySysLinkBase {
 // helper type to enable overriding virtual methods in python
+class IBlockFactory_trampoline : public IBlockFactory
+{
+public:
+    using IBlockFactory::IBlockFactory;
+
+    std::shared_ptr<ISimulationBlock> CreateBlock(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<IBlockEventsHandler> blockEventsHandler) override
+    {
+        PYBIND11_OVERRIDE_PURE_NAME(
+            std::shared_ptr<ISimulationBlock>, // return type
+            PySysLinkBase::IBlockFactory, // parent class
+            "create_block", // function name (python)
+            CreateBlock, // function name (c++)
+            blockConfiguration, blockEventsHandler // params
+        );
+    }
+};
+}  // namespace PySysLinkBase
+
+namespace PySysLinkBase {
+// helper type to enable overriding virtual methods in python
 class IBlockEventsHandler_trampoline : public IBlockEventsHandler
 {
 public:
@@ -290,6 +310,18 @@ void py_init_module_pysyslink_base(py::module& m)
 
 
     ////////////////////    <generated_from:IBlockFactory.h>    ////////////////////
+    // #ifndef SRC_PY_SYS_LINK_BASE_IBLOCK_FACTORY
+    //
+
+
+    auto pyClassIBlockFactory =
+        py::class_<PySysLinkBase::IBlockFactory, PySysLinkBase::IBlockFactory_trampoline>
+            (m, "IBlockFactory", "")
+        .def(py::init<>()) // implicit default constructor
+        .def("create_block",
+            &PySysLinkBase::IBlockFactory::CreateBlock, py::arg("block_configuration"), py::arg("block_events_handler"))
+        ;
+    // #endif
     ////////////////////    </generated_from:IBlockFactory.h>    ////////////////////
 
 

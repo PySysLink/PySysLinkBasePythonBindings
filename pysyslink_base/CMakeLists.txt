@@ -4,6 +4,8 @@ project(pysyslink_base VERSION "0.0.1")
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_BUILD_TYPE "Debug")
+
 include(litgen_cmake/litgen_cmake.cmake)
 
 
