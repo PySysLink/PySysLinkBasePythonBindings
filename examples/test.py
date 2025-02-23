@@ -8,8 +8,6 @@ pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.debug)
 # Create a BlockEventsHandler
 block_events_handler = pysyslink_base.BlockEventsHandler()
 
-print(block_events_handler is pysyslink_base.IBlockEventsHandler)
-
 # Load the plugins using BlockTypeSupportPlugingLoader
 pluging_loader = pysyslink_base.BlockTypeSupportPlugingLoader()
 block_factories = pluging_loader.load_plugins("/usr/local/lib")
