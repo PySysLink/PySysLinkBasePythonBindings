@@ -25,12 +25,13 @@ class Saturation(pysyslink_base.ISimulationBlock):
         return self.output_ports
     
     def _compute_outputs_of_block(self, sample_time, current_time: float, is_minor_step: bool = False) -> list[pysyslink_base.OutputPort]:   
-        value = self.get_input_ports()[0].get_value()
+        value = self.get_input_ports()[0].get_value().try_cast_to_typed().get_payload()
+        print("value: {}".format(value))
         if value > self.high_limit:
             value = self.high_limit
         elif value < self.low_limit:
             value = self.low_limit
-        self.get_output_ports()[0].set_value(value)
+        self.get_output_ports()[0].set_value(pysyslink_base.SignalValue_double(value))
         return self.get_output_ports()
 
 
@@ -51,7 +52,16 @@ print(isinstance(signal_value, pysyslink_base.UnknownTypeSignal))
 pluging_loader = pysyslink_base.BlockTypeSupportPlugingLoader()
 block_factories = pluging_loader.load_plugins("/usr/local/lib")
 
-saturation = Saturation({"high_limit": 10, "low_limit": -10}, block_events_handler)
+saturation = Saturation({"Name" : "saturation_1", "Id" : "saturation_1", "high_limit": 10, "low_limit": -10}, block_events_handler)
 
 print(saturation)
-print(saturation.get_output_ports())
+print(saturation.get_output_ports()[0].get_value().try_cast_to_typed().get_payload())
+
+saturation.get_input_ports()[0].set_value(pysyslink_base.SignalValue_double(9.0))
+saturation.compute_outputs_of_block(saturation.get_sample_time(), 0.0)
+print(saturation.get_output_ports()[0].get_value().try_cast_to_typed().get_payload())
+
+
+saturation.get_input_ports()[0].set_value(pysyslink_base.SignalValue_double(12.0))
+saturation.compute_outputs_of_block(saturation.get_sample_time(), 0.0)
+print(saturation.get_output_ports()[0].get_value().try_cast_to_typed().get_payload())
