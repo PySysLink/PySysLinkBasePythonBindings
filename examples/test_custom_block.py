@@ -92,7 +92,7 @@ simulation_model.propagate_sample_times()
 simulation_options = pysyslink_base.SimulationOptions()
 simulation_options.start_time = 0.0
 simulation_options.stop_time = 10.0
-simulation_options.run_in_natural_time = False
+simulation_options.run_in_natural_time = True
 simulation_options.natural_time_speed_multiplier = 1
 simulation_options.block_ids_input_or_output_and_indexes_to_log = [
     ("sum2", "output", 0),
