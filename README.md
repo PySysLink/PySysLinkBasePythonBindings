@@ -31,10 +31,11 @@ To install the Python bindings, you must first have a working installation of Py
    Repeat similar steps for any BlockTypeSupport plug‑ins you need.
 
 2. **Install the Python Bindings**  
-   Clone the Python bindings repository (e.g., `PySysLinkBasePythonBindings`) and install via pip:
+   Clone the Python bindings repository (e.g., `PySysLinkBasePythonBindings`) and install via pip (using a venv is recomended):
    ```bash
    git clone --recursive https://github.com/PySysLink/PySysLinkBasePythonBindings.git
    cd PySysLinkBasePythonBindings
+   pip install nanobind
    pip install -v pysyslink_base
    ```
 
