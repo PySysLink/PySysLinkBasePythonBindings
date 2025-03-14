@@ -6,10 +6,8 @@ import os
 from codemanip import amalgamated_header
 
 
-if "LITGEN_USE_NANOBIND" in os.environ and os.environ["LITGEN_USE_NANOBIND"] == "ON":
-    LITGEN_USE_NANOBIND = True
-else:
-    LITGEN_USE_NANOBIND = False
+LITGEN_USE_NANOBIND = True
+
 
 
 def postprocess_pydef(code: str) -> str:
