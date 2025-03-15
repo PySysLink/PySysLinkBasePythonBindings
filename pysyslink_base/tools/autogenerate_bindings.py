@@ -6,10 +6,6 @@ import os
 from codemanip import amalgamated_header
 
 
-if "LITGEN_USE_NANOBIND" in os.environ and os.environ["LITGEN_USE_NANOBIND"] == "ON":
-    LITGEN_USE_NANOBIND = True
-else:
-    LITGEN_USE_NANOBIND = False
 
 
 def postprocess_pydef(code: str) -> str:
@@ -28,8 +24,7 @@ def my_litgen_options() -> litgen.LitgenOptions:
     # configure your options here
     options = litgen.LitgenOptions()
 
-    if LITGEN_USE_NANOBIND:
-        options.bind_library = litgen.BindLibraryType.nanobind
+    options.bind_library = litgen.BindLibraryType.nanobind
 
     # ///////////////////////////////////////////////////////////////////
     #  Root namespace
@@ -180,8 +175,7 @@ def autogenerate(header_file: str) -> None:
         print(header)
 
     output_cpp_pydef_file = (
-        repository_dir + "/_pydef_nanobind/nanobind_PySysLinkBase.cpp" if LITGEN_USE_NANOBIND
-        else repository_dir + "/_pydef_pybind11/pybind_PySysLinkBase.cpp"
+        repository_dir + "/_pydef_nanobind/nanobind_PySysLinkBase.cpp"
     )
 
     litgen.write_generated_code_for_files(
@@ -212,7 +206,7 @@ def autogenerate(header_file: str) -> None:
             code = code.replace('PySysLinkBase::SignalValue::clone', 'PySysLinkBase::SignalValue<{} >::clone'.format(change_string), 1)
 
         code = code.replace("void py_init_module_pysyslink_base(nb::module_& m)\n{", "void py_init_module_pysyslink_base(nb::module_& m)\n{\nusing namespace PySysLinkBase;", 1)
-        code = code.replace("NB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);", "ISimulationBlockWithContinuousStates_trampoline(\nstd::map<std::string, ConfigurationValue> blockConfiguration,\nstd::shared_ptr<IBlockEventsHandler> blockEventsHandler)\n: ISimulationBlock(blockConfiguration, blockEventsHandler),\nISimulationBlockWithContinuousStates(blockConfiguration, blockEventsHandler) {}\n\nNB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);")
+        # code = code.replace("NB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);", "ISimulationBlockWithContinuousStates_trampoline(\nstd::map<std::string, ConfigurationValue> blockConfiguration,\nstd::shared_ptr<IBlockEventsHandler> blockEventsHandler)\n: ISimulationBlock(blockConfiguration, blockEventsHandler),\nISimulationBlockWithContinuousStates(blockConfiguration, blockEventsHandler) {}\n\nNB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);")
 
         # Replace std::pair and std::tuple, but ignore first occurrence
         def replace_after_first_occurrence(text, old, new):
