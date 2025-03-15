@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "numpy",
+    "numpy","nanobind",
 ]
 
 [project.optional-dependencies]

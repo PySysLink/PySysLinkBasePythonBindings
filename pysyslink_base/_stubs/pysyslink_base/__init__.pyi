@@ -42,22 +42,15 @@ class SpdlogManager:
 
 # End header: ISimulationBlockWithContinuousStates.h
 
-class UnknownTypeSignalValue:
-    def get_type_id(self) -> str:  # overridable (pure virtual)
-        pass
-    #  ------------------------------------------------------------------------
-    #      <template specializations for function TryCastToTyped>
-    @overload
-    def try_cast_to_typed(self) -> SignalValue[float]:
+class IBlockEventsHandler:
+    def block_event_callback(  # overridable (pure virtual)
+        self, block_event: BlockEvent
+    ) -> None:
         pass
 
-    @overload
-    def try_cast_to_typed(self) -> SignalValue[std.complex[float]]:
-        pass
-    #      </template specializations for function TryCastToTyped>
-    #  ------------------------------------------------------------------------
-
-    def clone(self) -> UnknownTypeSignalValue:  # overridable (pure virtual)
+    def register_value_update_block_event_callback(  # overridable (pure virtual)
+        self, callback: Callable[[ValueUpdateBlockEvent], None]
+    ) -> None:
         pass
 
     def __init__(self) -> None:
@@ -474,29 +467,8 @@ class Port:
 
 # End header: Port.h
 
-#  ------------------------------------------------------------------------
-#      <template specializations for class SignalValue>
-class SignalValue_double(
-    UnknownTypeSignalValue
-):  # Python specialization for SignalValue<double>
-    @overload
-    def __init__(self, initial_payload: float) -> None:
-        pass
-
-    @overload
-    def __init__(self, other: SignalValue) -> None:
-        pass
-
-    def clone(self) -> UnknownTypeSignalValue:
-        pass
-
-    def get_type_id(self) -> str:
-        pass
-
-    def get_payload(self) -> float:
-        pass
-
-    def set_payload(self, new_payload: float) -> None:
+class OutputPort(Port):
+    def __init__(self, value: UnknownTypeSignalValue) -> None:
         pass
 
 class SignalValue_complex_double(
@@ -758,6 +730,17 @@ class BlockTypeSupportPlugingLoader:
 
 # End header: BlockTypeSupportPlugingLoader.h
 
+class SimulationManager:
+    def __init__(
+        self, simulation_model: SimulationModel, simulation_options: SimulationOptions
+    ) -> None:
+        pass
+
+    def run_simulation(self) -> SimulationOutput:
+        pass
+
+# End header: SimulationManager.h
+
 class ModelParser:
     @staticmethod
     def parse_from_yaml(
@@ -774,17 +757,6 @@ class ModelParser:
 # namespace PySysLinkBase
 
 # End header: ModelParser.h
-
-class SimulationManager:
-    def __init__(
-        self, simulation_model: SimulationModel, simulation_options: SimulationOptions
-    ) -> None:
-        pass
-
-    def run_simulation(self) -> SimulationOutput:
-        pass
-
-# End header: SimulationManager.h
 
 # #endif ####################    </generated_from:test.h>    ####################
 
