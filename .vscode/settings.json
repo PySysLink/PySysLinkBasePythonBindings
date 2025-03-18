@@ -76,6 +76,9 @@
         "span": "cpp",
         "hash_map": "cpp",
         "hash_set": "cpp",
-        "source_location": "cpp"
+        "source_location": "cpp",
+        "expected": "cpp",
+        "format": "cpp",
+        "stdfloat": "cpp"
     }
 }
