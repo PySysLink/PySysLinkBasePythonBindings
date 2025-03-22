@@ -46,8 +46,8 @@ class SecondOrderSystem(pysyslink_base.ISimulationBlockWithContinuousStates):
         self.tau = block_configuration["tau"]
         self.Kp = block_configuration["Kp"]
 
-        self.x1 = 0
-        self.x2 = 0
+        self.x1 = 0.0
+        self.x2 = 0.0
 
         super().__init__(block_configuration, block_events_handler)
 
@@ -76,11 +76,10 @@ class SecondOrderSystem(pysyslink_base.ISimulationBlockWithContinuousStates):
         self.x1 = new_states[0]
         self.x2 = new_states[1]
     
-    # def get_events(self, sample_time, event_time, event_time_states):
-    #     return [(event_time_states[0], float('nan')), (event_time_states[1], float('nan'))]
+    def get_events(self, sample_time, event_time, event_time_states):
+        return [(event_time_states[0], 0.0), (event_time_states[1], 0.0)]
     
     def _compute_outputs_of_block(self, sample_time, current_time: float, is_minor_step: bool = False) -> list[pysyslink_base.OutputPort]:   
-        print("kaixo barnealdetik")
         y = self.x1
 
         self.get_output_ports()[0].set_value(pysyslink_base.SignalValue_double(y))
