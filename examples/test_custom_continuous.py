@@ -10,7 +10,7 @@ class Saturation(pysyslink_base.ISimulationBlock):
         
         self.high_limit = block_configuration["high_limit"]
         self.low_limit = block_configuration["low_limit"]
-
+        
         super().__init__(block_configuration, block_events_handler)
 
     def get_sample_time(self):
@@ -76,8 +76,8 @@ class SecondOrderSystem(pysyslink_base.ISimulationBlockWithContinuousStates):
         self.x1 = new_states[0]
         self.x2 = new_states[1]
     
-    def get_events(self, sample_time, event_time, event_time_states):
-        return [(event_time_states[0], float('nan')), (event_time_states[1], float('nan'))]
+    # def get_events(self, sample_time, event_time, event_time_states):
+    #     return [(event_time_states[0], float('nan')), (event_time_states[1], float('nan'))]
     
     def _compute_outputs_of_block(self, sample_time, current_time: float, is_minor_step: bool = False) -> list[pysyslink_base.OutputPort]:   
         print("kaixo barnealdetik")
@@ -102,7 +102,7 @@ class CustomBlockFactory(pysyslink_base.IBlockFactory):
 
 
 
-# Set the default logger configuration and log level
+# Set the default logger configuration and log level 
 pysyslink_base.SpdlogManager.configure_default_logger()
 pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.debug)
 
@@ -116,9 +116,9 @@ second_order_system = SecondOrderSystem({"Name" : "second_order_1", "Id" : "seco
 print(second_order_system)
 print(second_order_system.get_output_ports()[0].get_value().try_cast_to_typed().get_payload())
 
-second_order_system.get_input_ports()[0].set_value(pysyslink_base.SignalValue_double(9.0))
+second_order_system.get_input_ports()[0].set_value(pysyslink_base.SignalValue_double(9.0)) 
 print("kaixo")
-# second_order_system.compute_outputs_of_block(second_order_system.get_sample_time(), 0.0)
+# second_order_system.compute_outputs_of_block(second_order_system.get_sample_time(), 0.0) 
 second_order_system.set_continuous_states([1,1])
 print(second_order_system.get_continuous_states())
 
@@ -126,7 +126,9 @@ print(second_order_system.get_output_ports()[0].get_value().try_cast_to_typed().
 
 print("wololo")
 print(second_order_system.get_id())
+print(second_order_system.is_block_free_source())
 second_order_system.get_input_ports()[0].set_value(pysyslink_base.SignalValue_double(12.0))
+print("pre seg")
 second_order_system.compute_outputs_of_block(second_order_system.get_sample_time(), 0.0)
 print(second_order_system.get_output_ports()[0].get_value().try_cast_to_typed().get_payload())
 
@@ -158,12 +160,12 @@ simulation_options.block_ids_input_or_output_and_indexes_to_log = [
     ("accumulator1", "output", 0),
     ("display1", "input", 0)
 ]
-# simulation_options.solvers_configuration = {
-#     "default": {
-#         "Type": "odeint",
-#         "ControlledSolver": "runge_kutta_fehlberg78"
-#     }
-# }
+simulation_options.solvers_configuration = {
+    "default": {
+        "Type": "odeint",
+        "ControlledSolver": "runge_kutta_fehlberg78"
+    }
+}
 
 # Create a SimulationManager and run the simulation
 simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulation_options)

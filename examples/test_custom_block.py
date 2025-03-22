@@ -70,6 +70,7 @@ print(saturation.get_output_ports()[0].get_value().try_cast_to_typed().get_paylo
 saturation.get_input_ports()[0].set_value(pysyslink_base.SignalValue_double(12.0))
 saturation.compute_outputs_of_block(saturation.get_sample_time(), 0.0)
 print(saturation.get_output_ports()[0].get_value().try_cast_to_typed().get_payload())
+print(saturation.is_block_free_source())
 
 # Load the plugins using BlockTypeSupportPluginLoader
 plugin_loader = pysyslink_base.BlockTypeSupportPluginLoader()

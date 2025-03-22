@@ -214,7 +214,7 @@ def autogenerate(header_file: str) -> None:
             code = code.replace('PySysLinkBase::SignalValue::clone', 'PySysLinkBase::SignalValue<{} >::clone'.format(change_string), 1)
 
         code = code.replace("void py_init_module_pysyslink_base(nb::module_& m)\n{", "void py_init_module_pysyslink_base(nb::module_& m)\n{\nusing namespace PySysLinkBase;", 1)
-        code = code.replace("NB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);", "ISimulationBlockWithContinuousStates_trampoline(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<IBlockEventsHandler> blockEventsHandler)\n        : ISimulationBlockWithContinuousStates(blockConfiguration, blockEventsHandler), ISimulationBlock(blockConfiguration, blockEventsHandler) {{}}\n\nNB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);")
+        # code = code.replace("NB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);", "ISimulationBlockWithContinuousStates_trampoline(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<IBlockEventsHandler> blockEventsHandler)\n        : ISimulationBlockWithContinuousStates(blockConfiguration, blockEventsHandler), ISimulationBlock(blockConfiguration, blockEventsHandler) {{}}\n\nNB_TRAMPOLINE(ISimulationBlockWithContinuousStates, 12);")
 
         # Replace std::pair and std::tuple, but ignore first occurrence
         def replace_after_first_occurrence(text, old, new):

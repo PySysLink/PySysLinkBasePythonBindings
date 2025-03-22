@@ -52,7 +52,7 @@ Blocks:
     BlockType: Custom
     BlockClass: Custom/SecondOrderSystem
     Ts: 1
-    tau: 1
+    tau: 0.3
     Kp: 1
 
 

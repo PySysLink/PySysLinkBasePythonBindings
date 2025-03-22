@@ -1,54 +1,95 @@
 #ifndef AMALGAMATED_HEADER_H
 #define AMALGAMATED_HEADER_H
 
-#define SRC_SIMULATION_MANAGER
-#define SRC_SIMULATION_OUTPUT
-#define SRC_BLOCK_EVENTS_HANDLER
-#define PY_SYS_LINK_BASE_SAMPLE_TIME
 #define SRC_PY_SYS_LINK_BASE_BLOCK_TYPE_SUPPORT_PLUGING_LOADER
-#define SRC_BLOCK_EVENTS_BLOCK_EVENT
-#define SRC_PY_SYS_LINK_BASE_IBLOCK_FACTORY
-#define SRC_SPDLOG_MANAGER
-#define SRC_PORTS_AND_SIGNAL_VALUES_PORT
-#define SRC_CONTINUOUS_AND_ODE_IODE_STEP_SOLVER
-#define PY_SYS_LINK_BASE_PORTS_AND_SIGNAL_VALUES_UNKNOWN_TYPE_SIGNAL_VALUE
-#define SRC_PY_SYS_LINK_BASE_MODEL_PARSER
-#define SRC_FULLY_SUPPORTED_SIGNAL_VALUE
-#define SRC_PORTS_AND_SIGNAL_VALUES_OUTPUT_PORT
-#define SRC_SIMULATION_OPTIONS
-#define SRC_PY_SYS_LINK_BASE_PORT_LINK
-#define SRC_ISIMULATION_BLOCK
-#define SRC_BLOCK_EVENTS_VALUE_UPDATE_BLOCK_EVENT
-#define SRC_CONFIGURATION_VALUE
-#define SRC_BASIC_ODE_SOLVER
-#define PYSYSLINK_BASE_SRC_CPP_LIBRARIES_PY_SYS_LINK_BASE_SRC_CONTINUOUS_AND_ODE_ISIMULATION_BLOCK_WITH_CONTINUOUS_STATES
-#define SRC_EULER_FORWARD_STEP_SOLVER
-#define SRC_SIMULATION_MODEL
-#define SRC_IBLOCK_EVENTS_HANDLER
-#define SRC_PY_SYS_LINK_BASE_PORTS_AND_SIGNAL_VALUES_SIGNAL_VALUE
-#define SRC_CONTINUOUS_AND_ODE_ODEINT_STEP_SOLVER
-#define SRC_PORTS_AND_SIGNAL_VALUES_INPUT_PORT
 #define SRC_CONTINUOUS_AND_ODE_SOLVER_FACTORY
-
-// Begin header: IOdeStepSolver.h
+#define SRC_EULER_FORWARD_STEP_SOLVER
+#define SRC_SIMULATION_OPTIONS
+#define SRC_SIMULATION_MANAGER
+#define SRC_IBLOCK_EVENTS_HANDLER
 #define SRC_CONTINUOUS_AND_ODE_IODE_STEP_SOLVER
+#define SRC_SIMULATION_OUTPUT
+#define SRC_PORTS_AND_SIGNAL_VALUES_OUTPUT_PORT
+#define SRC_FULLY_SUPPORTED_SIGNAL_VALUE
+#define SRC_PY_SYS_LINK_BASE_MODEL_PARSER
+#define SRC_PY_SYS_LINK_BASE_IBLOCK_FACTORY
+#define PY_SYS_LINK_BASE_PORTS_AND_SIGNAL_VALUES_UNKNOWN_TYPE_SIGNAL_VALUE
+#define SRC_BLOCK_EVENTS_HANDLER
+#define SRC_CONTINUOUS_AND_ODE_ODEINT_STEP_SOLVER
+#define PYSYSLINK_BASE_SRC_CPP_LIBRARIES_PY_SYS_LINK_BASE_SRC_CONTINUOUS_AND_ODE_ISIMULATION_BLOCK_WITH_CONTINUOUS_STATES
+#define SRC_SIMULATION_MODEL
+#define SRC_ISIMULATION_BLOCK
+#define SRC_PORTS_AND_SIGNAL_VALUES_PORT
+#define SRC_PY_SYS_LINK_BASE_PORTS_AND_SIGNAL_VALUES_SIGNAL_VALUE
+#define SRC_BLOCK_EVENTS_VALUE_UPDATE_BLOCK_EVENT
+#define SRC_PY_SYS_LINK_BASE_PORT_LINK
+#define SRC_PORTS_AND_SIGNAL_VALUES_INPUT_PORT
+#define SRC_SPDLOG_MANAGER
+#define SRC_BASIC_ODE_SOLVER
+#define SRC_BLOCK_EVENTS_BLOCK_EVENT
+#define SRC_CONFIGURATION_VALUE
+#define PY_SYS_LINK_BASE_SAMPLE_TIME
 
-#include <tuple>
+// Begin header: SampleTime.h
+#define PY_SYS_LINK_BASE_SAMPLE_TIME
+
+#include <cmath>
 #include <vector>
-#include <functional>
+#include <limits>
+#include <string>
+#include <memory>
 
 namespace PySysLinkBase
 {
-    class IOdeStepSolver
+    enum SampleTimeType
     {
-        public:
-            virtual std::tuple<bool, std::vector<double>, double> SolveStep(std::function<std::vector<double>(std::vector<double>, double)> system,
-                                                                    std::vector<double> states_0, double currentTime, double timeStep) = 0;
+        continuous,
+        discrete,
+        constant,
+        inherited,
+        multirate
     };
-} // namespace PySysLinkBase
 
+    class SampleTime
+    {
+        private:
+            SampleTimeType sampleTimeType;
+            double discreteSampleTime;
+            int continuousSampleTimeGroup = -1;
+            std::vector<SampleTimeType> supportedSampleTimeTypesForInheritance = std::vector<SampleTimeType>{};
+            std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes = {};
+            int inputMultirateSampleTimeIndex = -1;
+            int outputMultirateSampleTimeIndex = -1;
+        public:
+            SampleTime(SampleTimeType sampleTimeType,
+                        double discreteSampleTime, int continuousSampleTimeGroup, std::vector<SampleTimeType> supportedSampleTimeTypesForInheritance, std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes,
+                        int inputMultirateSampleTimeIndex = -1, int outputMultirateSampleTimeIndex = -1);
 
-// End header: IOdeStepSolver.h
+            SampleTime(SampleTimeType sampleTimeType) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, std::vector<SampleTimeType>{}, {}){}
+            SampleTime(SampleTimeType sampleTimeType, double discreteSampleTime) : SampleTime(sampleTimeType, discreteSampleTime, -1, std::vector<SampleTimeType>{}, {}){}
+            SampleTime(SampleTimeType sampleTimeType, int continuousSampleTimeGroup) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), continuousSampleTimeGroup, std::vector<SampleTimeType>{}, {}){}
+            SampleTime(SampleTimeType sampleTimeType, std::vector<SampleTimeType> supportedSampleTimeTypesForInheritance) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, supportedSampleTimeTypesForInheritance, {}){}
+            SampleTime(SampleTimeType sampleTimeType, std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, {}, multirateSampleTimes){}
+            SampleTime(SampleTimeType sampleTimeType, std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes, int inputMultirateSampleTimeIndex, int outputMultirateSampleTimeIndex)
+            : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, {}, multirateSampleTimes, inputMultirateSampleTimeIndex, outputMultirateSampleTimeIndex){}
+
+            const SampleTimeType& GetSampleTimeType() const;
+            const double GetDiscreteSampleTime() const;
+            const int GetContinuousSampleTimeGroup() const;
+            const std::vector<SampleTimeType> GetSupportedSampleTimeTypesForInheritance() const;
+            const std::vector<std::shared_ptr<SampleTime>> GetMultirateSampleTimes() const;
+            const void SetMultirateSampleTimeInIndex(std::shared_ptr<SampleTime> multirateSampleTime, int index);
+            const bool HasMultirateInheritedSampleTime() const;
+            const int GetInputMultirateSampleTimeIndex() const;
+            const int GetOutputMultirateSampleTimeIndex() const;
+            const bool IsInputMultirateInherited() const;
+            const bool IsOutputMultirateInherited() const;
+
+            static std::string SampleTimeTypeString(SampleTimeType sampleTimeType);
+    };
+}
+
+// End header: SampleTime.h
 
 // Begin header: IBlockEventsHandler.h
 #define SRC_IBLOCK_EVENTS_HANDLER
@@ -75,54 +116,51 @@ namespace PySysLinkBase
 
 // End header: IBlockEventsHandler.h
 
-// Begin header: FullySupportedSignalValue.h
-#define SRC_FULLY_SUPPORTED_SIGNAL_VALUE
+// Begin header: IOdeStepSolver.h
+#define SRC_CONTINUOUS_AND_ODE_IODE_STEP_SOLVER
 
-
-#include <string>
-#include <variant>
+#include <tuple>
 #include <vector>
-#include <memory>
-#include <map>
-#include <stdexcept>
-#include <complex>
+#include <functional>
 
 namespace PySysLinkBase
 {
-    using FullySupportedSignalValue = std::variant<
-        int,
-        double,
-        bool,
-        std::complex<double>,
-        std::string>;
-
-
-} // namespace PySysLinkBase
-
-
-
-// End header: FullySupportedSignalValue.h
-
-// Begin header: BlockEvent.h
-#define SRC_BLOCK_EVENTS_BLOCK_EVENT
-
-#include <string>
-
-namespace PySysLinkBase
-{
-    class BlockEvent
+    class IOdeStepSolver
     {
         public:
-        std::string eventTypeId;
-
-        BlockEvent(std::string eventTypeId) : eventTypeId(eventTypeId) {}
-
-        virtual ~BlockEvent() = default; // Ensures the class is polymorphic
+            virtual std::tuple<bool, std::vector<double>, double> SolveStep(std::function<std::vector<double>(std::vector<double>, double)> system,
+                                                                    std::vector<double> states_0, double currentTime, double timeStep) = 0;
     };
 } // namespace PySysLinkBase
 
 
-// End header: BlockEvent.h
+// End header: IOdeStepSolver.h
+
+// Begin header: SpdlogManager.h
+#define SRC_SPDLOG_MANAGER
+
+namespace PySysLinkBase
+{
+    enum LogLevel
+    {
+        off,
+        debug,
+        info,
+        warning,
+        error,
+        critical
+    };
+
+    class SpdlogManager
+    {
+        public:
+        static void ConfigureDefaultLogger();
+        static void SetLogLevel(LogLevel logLevel);
+    };
+} // namespace PySysLinkBase
+
+
+// End header: SpdlogManager.h
 
 // Begin header: ConfigurationValue.h
 #define SRC_CONFIGURATION_VALUE
@@ -192,66 +230,26 @@ namespace PySysLinkBase
 
 // End header: ConfigurationValue.h
 
-// Begin header: SampleTime.h
-#define PY_SYS_LINK_BASE_SAMPLE_TIME
+// Begin header: BlockEvent.h
+#define SRC_BLOCK_EVENTS_BLOCK_EVENT
 
-#include <cmath>
-#include <vector>
-#include <limits>
 #include <string>
-#include <memory>
 
 namespace PySysLinkBase
 {
-    enum SampleTimeType
+    class BlockEvent
     {
-        continuous,
-        discrete,
-        constant,
-        inherited,
-        multirate
-    };
-
-    class SampleTime
-    {
-        private:
-            SampleTimeType sampleTimeType;
-            double discreteSampleTime;
-            int continuousSampleTimeGroup = -1;
-            std::vector<SampleTimeType> supportedSampleTimeTypesForInheritance = std::vector<SampleTimeType>{};
-            std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes = {};
-            int inputMultirateSampleTimeIndex = -1;
-            int outputMultirateSampleTimeIndex = -1;
         public:
-            SampleTime(SampleTimeType sampleTimeType,
-                        double discreteSampleTime, int continuousSampleTimeGroup, std::vector<SampleTimeType> supportedSampleTimeTypesForInheritance, std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes,
-                        int inputMultirateSampleTimeIndex = -1, int outputMultirateSampleTimeIndex = -1);
+        std::string eventTypeId;
 
-            SampleTime(SampleTimeType sampleTimeType) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, std::vector<SampleTimeType>{}, {}){}
-            SampleTime(SampleTimeType sampleTimeType, double discreteSampleTime) : SampleTime(sampleTimeType, discreteSampleTime, -1, std::vector<SampleTimeType>{}, {}){}
-            SampleTime(SampleTimeType sampleTimeType, int continuousSampleTimeGroup) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), continuousSampleTimeGroup, std::vector<SampleTimeType>{}, {}){}
-            SampleTime(SampleTimeType sampleTimeType, std::vector<SampleTimeType> supportedSampleTimeTypesForInheritance) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, supportedSampleTimeTypesForInheritance, {}){}
-            SampleTime(SampleTimeType sampleTimeType, std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes) : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, {}, multirateSampleTimes){}
-            SampleTime(SampleTimeType sampleTimeType, std::vector<std::shared_ptr<SampleTime>> multirateSampleTimes, int inputMultirateSampleTimeIndex, int outputMultirateSampleTimeIndex)
-            : SampleTime(sampleTimeType, std::numeric_limits<double>::quiet_NaN(), -1, {}, multirateSampleTimes, inputMultirateSampleTimeIndex, outputMultirateSampleTimeIndex){}
+        BlockEvent(std::string eventTypeId) : eventTypeId(eventTypeId) {}
 
-            const SampleTimeType& GetSampleTimeType() const;
-            const double GetDiscreteSampleTime() const;
-            const int GetContinuousSampleTimeGroup() const;
-            const std::vector<SampleTimeType> GetSupportedSampleTimeTypesForInheritance() const;
-            const std::vector<std::shared_ptr<SampleTime>> GetMultirateSampleTimes() const;
-            const void SetMultirateSampleTimeInIndex(std::shared_ptr<SampleTime> multirateSampleTime, int index);
-            const bool HasMultirateInheritedSampleTime() const;
-            const int GetInputMultirateSampleTimeIndex() const;
-            const int GetOutputMultirateSampleTimeIndex() const;
-            const bool IsInputMultirateInherited() const;
-            const bool IsOutputMultirateInherited() const;
-
-            static std::string SampleTimeTypeString(SampleTimeType sampleTimeType);
+        virtual ~BlockEvent() = default; // Ensures the class is polymorphic
     };
-}
+} // namespace PySysLinkBase
 
-// End header: SampleTime.h
+
+// End header: BlockEvent.h
 
 // Begin header: UnknownTypeSignalValue.h
 #define PY_SYS_LINK_BASE_PORTS_AND_SIGNAL_VALUES_UNKNOWN_TYPE_SIGNAL_VALUE
@@ -288,6 +286,34 @@ namespace PySysLinkBase
 } // namespace PySysLinkBase
 
 // End header: UnknownTypeSignalValue.h
+
+// Begin header: FullySupportedSignalValue.h
+#define SRC_FULLY_SUPPORTED_SIGNAL_VALUE
+
+
+#include <string>
+#include <variant>
+#include <vector>
+#include <memory>
+#include <map>
+#include <stdexcept>
+#include <complex>
+
+namespace PySysLinkBase
+{
+    using FullySupportedSignalValue = std::variant<
+        int,
+        double,
+        bool,
+        std::complex<double>,
+        std::string>;
+
+
+} // namespace PySysLinkBase
+
+
+
+// End header: FullySupportedSignalValue.h
 
 // Begin header: SimulationOutput.h
 #define SRC_SIMULATION_OUTPUT
@@ -352,90 +378,6 @@ namespace PySysLinkBase
 
 
 // End header: SimulationOutput.h
-
-// Begin header: SpdlogManager.h
-#define SRC_SPDLOG_MANAGER
-
-namespace PySysLinkBase
-{
-    enum LogLevel
-    {
-        off,
-        debug,
-        info,
-        warning,
-        error,
-        critical
-    };
-
-    class SpdlogManager
-    {
-        public:
-        static void ConfigureDefaultLogger();
-        static void SetLogLevel(LogLevel logLevel);
-    };
-} // namespace PySysLinkBase
-
-
-// End header: SpdlogManager.h
-
-// Begin header: OdeintStepSolver.h
-#define SRC_CONTINUOUS_AND_ODE_ODEINT_STEP_SOLVER
-
-
-#include <tuple>
-#include <vector>
-#include <functional>
-#include "IOdeStepSolver.h"
-#include <boost/numeric/odeint.hpp>
-
-namespace PySysLinkBase
-{
-    template <typename T>
-    class OdeintStepSolver : public IOdeStepSolver
-    {
-        private:
-            std::shared_ptr<T> controlledStepper;
-        public:
-            OdeintStepSolver()
-            {
-                this->controlledStepper = std::make_shared<T>();
-            }
-            std::tuple<bool, std::vector<double>, double> SolveStep(std::function<std::vector<double>(std::vector<double>, double)> system,
-                                                                    std::vector<double> states_0, double currentTime, double timeStep)
-            {
-                // Define the system function in the format expected by ODEINT
-                auto systemFunction = [&system](const std::vector<double> &x, std::vector<double> &dxdt, double t) {
-                    std::vector<double> gradient = system(x, t);
-                    dxdt = gradient; // Assign the computed derivative
-                };
-
-                // Create the stepper
-                // Stepper stepper;
-
-                // Integrate a single step
-                std::vector<double> newStates = states_0; // Initial state
-                double dt = timeStep;
-
-                boost::numeric::odeint::controlled_step_result result = this->controlledStepper->try_step(systemFunction, newStates, currentTime, dt);
-                // controlled_step_result result = stepper.try_step(systemFunction, newStates, currentTime, dt);
-
-                system(states_0, currentTime); // Set initial states again, may be optimized
-
-                // Debug log output
-                if (result == boost::numeric::odeint::success)
-                {
-                    return {true, newStates, dt};
-                }
-                else
-                {
-                    return {false, newStates, dt};
-                }
-            }
-    };
-} // namespace PySysLinkBase
-
-// End header: OdeintStepSolver.h
 
 // Begin header: Port.h
 #define SRC_PORTS_AND_SIGNAL_VALUES_PORT
@@ -514,75 +456,6 @@ namespace PySysLinkBase
 
 // End header: SignalValue.h
 
-// Begin header: BlockEventsHandler.h
-#define SRC_BLOCK_EVENTS_HANDLER
-
-#include "BlockEvents/BlockEvent.h"
-#include "BlockEvents/ValueUpdateBlockEvent.h"
-#include "IBlockEventsHandler.h"
-#include <memory>
-#include <functional>
-
-namespace PySysLinkBase
-{
-    class BlockEventsHandler : public IBlockEventsHandler
-    {
-        private:
-        std::vector<std::function<void (std::shared_ptr<ValueUpdateBlockEvent>)>> valueUpdateBlockEventCallbacks;
-
-        public:
-
-        BlockEventsHandler();
-
-        void BlockEventCallback(const std::shared_ptr<BlockEvent> blockEvent) const;
-
-        void RegisterValueUpdateBlockEventCallback(std::function<void (std::shared_ptr<ValueUpdateBlockEvent>)> callback);
-    };
-} // namespace PySysLinkBase
-
-// End header: BlockEventsHandler.h
-
-// Begin header: SolverFactory.h
-#define SRC_CONTINUOUS_AND_ODE_SOLVER_FACTORY
-
-#include <memory>
-#include "IOdeStepSolver.h"
-#include <map>
-#include "../ConfigurationValue.h"
-
-namespace PySysLinkBase
-{
-    class SolverFactory
-    {
-        public:
-            static std::shared_ptr<IOdeStepSolver> CreateOdeStepSolver(std::map<std::string, ConfigurationValue> solverConfiguration);
-    };
-} // namespace PySysLinkBase
-
-
-// End header: SolverFactory.h
-
-// Begin header: EulerForwardStepSolver.h
-#define SRC_EULER_FORWARD_STEP_SOLVER
-
-
-#include <tuple>
-#include <vector>
-#include <functional>
-#include "IOdeStepSolver.h"
-
-namespace PySysLinkBase
-{
-    class EulerForwardStepSolver : public IOdeStepSolver
-    {
-        public:
-            virtual std::tuple<bool, std::vector<double>, double> SolveStep(std::function<std::vector<double>(std::vector<double>, double)> system,
-                                                                    std::vector<double> states_0, double currentTime, double timeStep);
-    };
-} // namespace PySysLinkBase
-
-// End header: EulerForwardStepSolver.h
-
 // Begin header: ISimulationBlock.h
 #define SRC_ISIMULATION_BLOCK
 
@@ -650,6 +523,112 @@ namespace PySysLinkBase
 
 // End header: ISimulationBlock.h
 
+// Begin header: SolverFactory.h
+#define SRC_CONTINUOUS_AND_ODE_SOLVER_FACTORY
+
+#include <memory>
+#include "IOdeStepSolver.h"
+#include <map>
+#include "../ConfigurationValue.h"
+
+namespace PySysLinkBase
+{
+    class SolverFactory
+    {
+        public:
+            static std::shared_ptr<IOdeStepSolver> CreateOdeStepSolver(std::map<std::string, ConfigurationValue> solverConfiguration);
+    };
+} // namespace PySysLinkBase
+
+
+// End header: SolverFactory.h
+
+// Begin header: BlockEventsHandler.h
+#define SRC_BLOCK_EVENTS_HANDLER
+
+#include "BlockEvents/BlockEvent.h"
+#include "BlockEvents/ValueUpdateBlockEvent.h"
+#include "IBlockEventsHandler.h"
+#include <memory>
+#include <functional>
+
+namespace PySysLinkBase
+{
+    class BlockEventsHandler : public IBlockEventsHandler
+    {
+        private:
+        std::vector<std::function<void (std::shared_ptr<ValueUpdateBlockEvent>)>> valueUpdateBlockEventCallbacks;
+
+        public:
+
+        BlockEventsHandler();
+
+        void BlockEventCallback(const std::shared_ptr<BlockEvent> blockEvent) const;
+
+        void RegisterValueUpdateBlockEventCallback(std::function<void (std::shared_ptr<ValueUpdateBlockEvent>)> callback);
+    };
+} // namespace PySysLinkBase
+
+// End header: BlockEventsHandler.h
+
+// Begin header: OdeintStepSolver.h
+#define SRC_CONTINUOUS_AND_ODE_ODEINT_STEP_SOLVER
+
+
+#include <tuple>
+#include <vector>
+#include <functional>
+#include "IOdeStepSolver.h"
+#include <boost/numeric/odeint.hpp>
+
+namespace PySysLinkBase
+{
+    template <typename T>
+    class OdeintStepSolver : public IOdeStepSolver
+    {
+        private:
+            std::shared_ptr<T> controlledStepper;
+        public:
+            OdeintStepSolver()
+            {
+                this->controlledStepper = std::make_shared<T>();
+            }
+            std::tuple<bool, std::vector<double>, double> SolveStep(std::function<std::vector<double>(std::vector<double>, double)> system,
+                                                                    std::vector<double> states_0, double currentTime, double timeStep)
+            {
+                // Define the system function in the format expected by ODEINT
+                auto systemFunction = [&system](const std::vector<double> &x, std::vector<double> &dxdt, double t) {
+                    std::vector<double> gradient = system(x, t);
+                    dxdt = gradient; // Assign the computed derivative
+                };
+
+                // Create the stepper
+                // Stepper stepper;
+
+                // Integrate a single step
+                std::vector<double> newStates = states_0; // Initial state
+                double dt = timeStep;
+
+                boost::numeric::odeint::controlled_step_result result = this->controlledStepper->try_step(systemFunction, newStates, currentTime, dt);
+                // controlled_step_result result = stepper.try_step(systemFunction, newStates, currentTime, dt);
+
+                system(states_0, currentTime); // Set initial states again, may be optimized
+
+                // Debug log output
+                if (result == boost::numeric::odeint::success)
+                {
+                    return {true, newStates, dt};
+                }
+                else
+                {
+                    return {false, newStates, dt};
+                }
+            }
+    };
+} // namespace PySysLinkBase
+
+// End header: OdeintStepSolver.h
+
 // Begin header: SimulationOptions.h
 #define SRC_SIMULATION_OPTIONS
 
@@ -681,6 +660,27 @@ namespace PySysLinkBase
 
 // End header: SimulationOptions.h
 
+// Begin header: EulerForwardStepSolver.h
+#define SRC_EULER_FORWARD_STEP_SOLVER
+
+
+#include <tuple>
+#include <vector>
+#include <functional>
+#include "IOdeStepSolver.h"
+
+namespace PySysLinkBase
+{
+    class EulerForwardStepSolver : public IOdeStepSolver
+    {
+        public:
+            virtual std::tuple<bool, std::vector<double>, double> SolveStep(std::function<std::vector<double>(std::vector<double>, double)> system,
+                                                                    std::vector<double> states_0, double currentTime, double timeStep);
+    };
+} // namespace PySysLinkBase
+
+// End header: EulerForwardStepSolver.h
+
 // Begin header: ValueUpdateBlockEvent.h
 #define SRC_BLOCK_EVENTS_VALUE_UPDATE_BLOCK_EVENT
 
@@ -703,23 +703,43 @@ namespace PySysLinkBase
 } // namespace PySysLinkBase
 // End header: ValueUpdateBlockEvent.h
 
-// Begin header: InputPort.h
-#define SRC_PORTS_AND_SIGNAL_VALUES_INPUT_PORT
+// Begin header: OutputPort.h
+#define SRC_PORTS_AND_SIGNAL_VALUES_OUTPUT_PORT
+
 
 #include "Port.h"
 
 namespace PySysLinkBase
 {
-    class InputPort : public Port {
-    private:
-        bool hasDirectFeedthrough;
-    public:
-        InputPort(bool hasDirectFeedthrough, std::shared_ptr<UnknownTypeSignalValue> value);
-        const bool HasDirectFeedthrough() const;
+    class OutputPort : public Port {
+        public:
+            OutputPort(std::shared_ptr<UnknownTypeSignalValue> value);
     };
 }
 
-// End header: InputPort.h
+// End header: OutputPort.h
+
+// Begin header: IBlockFactory.h
+#define SRC_PY_SYS_LINK_BASE_IBLOCK_FACTORY
+
+#include "ISimulationBlock.h"
+#include <vector>
+#include "ConfigurationValue.h"
+#include <map>
+#include <memory>
+#include <string>
+#include "IBlockEventsHandler.h"
+
+namespace PySysLinkBase
+{
+   class IBlockFactory {
+      public:
+         virtual ~IBlockFactory() = default;
+         virtual std::shared_ptr<ISimulationBlock> CreateBlock(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<IBlockEventsHandler> blockEventsHandler) = 0;
+   };
+}
+
+// End header: IBlockFactory.h
 
 // Begin header: PortLink.h
 #define SRC_PY_SYS_LINK_BASE_PORT_LINK
@@ -764,7 +784,7 @@ namespace PySysLinkBase
 
 namespace PySysLinkBase
 {
-    class ISimulationBlockWithContinuousStates : public virtual ISimulationBlock
+    class ISimulationBlockWithContinuousStates : public ISimulationBlock
     {
         public:
             ISimulationBlockWithContinuousStates(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<IBlockEventsHandler> blockEventsHandler)
@@ -784,43 +804,23 @@ namespace PySysLinkBase
 
 // End header: ISimulationBlockWithContinuousStates.h
 
-// Begin header: IBlockFactory.h
-#define SRC_PY_SYS_LINK_BASE_IBLOCK_FACTORY
-
-#include "ISimulationBlock.h"
-#include <vector>
-#include "ConfigurationValue.h"
-#include <map>
-#include <memory>
-#include <string>
-#include "IBlockEventsHandler.h"
-
-namespace PySysLinkBase
-{
-   class IBlockFactory {
-      public:
-         virtual ~IBlockFactory() = default;
-         virtual std::shared_ptr<ISimulationBlock> CreateBlock(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<IBlockEventsHandler> blockEventsHandler) = 0;
-   };
-}
-
-// End header: IBlockFactory.h
-
-// Begin header: OutputPort.h
-#define SRC_PORTS_AND_SIGNAL_VALUES_OUTPUT_PORT
-
+// Begin header: InputPort.h
+#define SRC_PORTS_AND_SIGNAL_VALUES_INPUT_PORT
 
 #include "Port.h"
 
 namespace PySysLinkBase
 {
-    class OutputPort : public Port {
-        public:
-            OutputPort(std::shared_ptr<UnknownTypeSignalValue> value);
+    class InputPort : public Port {
+    private:
+        bool hasDirectFeedthrough;
+    public:
+        InputPort(bool hasDirectFeedthrough, std::shared_ptr<UnknownTypeSignalValue> value);
+        const bool HasDirectFeedthrough() const;
     };
 }
 
-// End header: OutputPort.h
+// End header: InputPort.h
 
 // Begin header: SimulationModel.h
 #define SRC_SIMULATION_MODEL
@@ -889,34 +889,6 @@ private:
 } // namespace PySysLinkBase
 
 // End header: BlockTypeSupportPluginLoader.h
-
-// Begin header: ModelParser.h
-#define SRC_PY_SYS_LINK_BASE_MODEL_PARSER
-
-#include "SimulationModel.h"
-#include <string>
-#include "ConfigurationValue.h"
-#include <yaml-cpp/yaml.h>
-#include <map>
-#include "IBlockFactory.h"
-
-namespace PySysLinkBase
-{
-    class ModelParser
-    {
-        private:
-            static ConfigurationValue YamlToConfigurationValue(const YAML::Node& node);
-            static std::vector<std::shared_ptr<PortLink>> ParseLinks(std::vector<std::map<std::string, ConfigurationValue>> linksConfigurations, const std::vector<std::shared_ptr<ISimulationBlock>>& blocks);
-            static std::vector<std::shared_ptr<ISimulationBlock>> ParseBlocks(std::vector<std::map<std::string, ConfigurationValue>> blocksConfigurations, const std::map<std::string, std::shared_ptr<IBlockFactory>>& blockFactories, std::shared_ptr<IBlockEventsHandler> blockEventsHandler);
-            static std::complex<double> ParseComplex(const std::string& str);
-
-        public:
-            static std::shared_ptr<SimulationModel> ParseFromYaml(std::string filename, const std::map<std::string, std::shared_ptr<IBlockFactory>>& blockFactories, std::shared_ptr<IBlockEventsHandler> blockEventsHandler);
-    };
-} // namespace PySysLinkBase
-
-
-// End header: ModelParser.h
 
 // Begin header: SimulationManager.h
 #define SRC_SIMULATION_MANAGER
@@ -987,6 +959,34 @@ namespace PySysLinkBase
 }
 
 // End header: SimulationManager.h
+
+// Begin header: ModelParser.h
+#define SRC_PY_SYS_LINK_BASE_MODEL_PARSER
+
+#include "SimulationModel.h"
+#include <string>
+#include "ConfigurationValue.h"
+#include <yaml-cpp/yaml.h>
+#include <map>
+#include "IBlockFactory.h"
+
+namespace PySysLinkBase
+{
+    class ModelParser
+    {
+        private:
+            static ConfigurationValue YamlToConfigurationValue(const YAML::Node& node);
+            static std::vector<std::shared_ptr<PortLink>> ParseLinks(std::vector<std::map<std::string, ConfigurationValue>> linksConfigurations, const std::vector<std::shared_ptr<ISimulationBlock>>& blocks);
+            static std::vector<std::shared_ptr<ISimulationBlock>> ParseBlocks(std::vector<std::map<std::string, ConfigurationValue>> blocksConfigurations, const std::map<std::string, std::shared_ptr<IBlockFactory>>& blockFactories, std::shared_ptr<IBlockEventsHandler> blockEventsHandler);
+            static std::complex<double> ParseComplex(const std::string& str);
+
+        public:
+            static std::shared_ptr<SimulationModel> ParseFromYaml(std::string filename, const std::map<std::string, std::shared_ptr<IBlockFactory>>& blockFactories, std::shared_ptr<IBlockEventsHandler> blockEventsHandler);
+    };
+} // namespace PySysLinkBase
+
+
+// End header: ModelParser.h
 
 // Begin header: BasicOdeSolver.h
 #define SRC_BASIC_ODE_SOLVER
