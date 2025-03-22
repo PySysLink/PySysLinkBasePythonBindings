@@ -41,18 +41,20 @@ Blocks:
     BlockClass: BasicBlocks/Accumulator
     SampleTime: 0.2
     InitialValue: -1.0
-  - Id: accumulator1
-    Name: Main accumulator
-    BlockType: BasicCpp
-    BlockClass: BasicBlocks/Accumulator
-    SampleTime: 0.2
-    InitialValue: -1.0
-  - Id: saturation1
-    Name: Saturation1
+  # - Id: second_order
+  #   Name: Saturation1
+  #   BlockType: Custom
+  #   BlockClass: Custom/Saturation
+  #   high_limit: 13.2
+  #   low_limit: -13.2
+  - Id: second_order
+    Name: Second order
     BlockType: Custom
-    BlockClass: Custom/Saturation
-    high_limit: 13.2
-    low_limit: -13.2
+    BlockClass: Custom/SecondOrderSystem
+    Ts: 1
+    tau: 1
+    Kp: 1
+
 
 Links:
   - Id: link1
@@ -69,7 +71,13 @@ Links:
     DestinationPortIdx: 1
   - Id: link3
     Name: link3
-    SourceBlockId: saturation1
+    SourceBlockId: sum2
+    SourcePortIdx: 0
+    DestinationBlockId: second_order
+    DestinationPortIdx: 0
+  - Id: linkExtra
+    Name: linkExtra
+    SourceBlockId: second_order
     SourcePortIdx: 0
     DestinationBlockId: display1
     DestinationPortIdx: 0
@@ -110,9 +118,3 @@ Links:
     SourcePortIdx: 0
     DestinationBlockId: sum3
     DestinationPortIdx: 1
-  - Id: link9
-    Name: link3
-    SourceBlockId: sum2
-    SourcePortIdx: 0
-    DestinationBlockId: saturation1
-    DestinationPortIdx: 0

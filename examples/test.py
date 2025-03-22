@@ -8,9 +8,9 @@ pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.debug)
 # Create a BlockEventsHandler
 block_events_handler = pysyslink_base.BlockEventsHandler()
 
-# Load the plugins using BlockTypeSupportPlugingLoader
-pluging_loader = pysyslink_base.BlockTypeSupportPlugingLoader()
-block_factories = pluging_loader.load_plugins("/usr/local/lib")
+# Load the plugins using BlockTypeSupportPluginLoader
+plugin_loader = pysyslink_base.BlockTypeSupportPluginLoader()
+block_factories = plugin_loader.load_plugins("/usr/local/lib")
 
 
 # Parse the simulation model from a YAML file
@@ -34,7 +34,7 @@ simulation_options.run_in_natural_time = False
 simulation_options.natural_time_speed_multiplier = 1
 simulation_options.block_ids_input_or_output_and_indexes_to_log = [
     ("const1", "output", 0),
-    ("acumulator1", "output", 0),
+    ("accumulator1", "output", 0),
     ("display1", "input", 0)
 ]
 # simulation_options.solvers_configuration = {
@@ -49,8 +49,8 @@ simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulati
 simulation_output = simulation_manager.run_simulation()
 
 # Access and print continuous values for integrator2/output
-continuous_values = simulation_output.signals["LoggedSignals"]["acumulator1/output/0"].try_cast_to_typed().values
-continuous_times = simulation_output.signals["LoggedSignals"]["acumulator1/output/0"].try_cast_to_typed().times
+continuous_values = simulation_output.signals["LoggedSignals"]["accumulator1/output/0"].try_cast_to_typed().values
+continuous_times = simulation_output.signals["LoggedSignals"]["accumulator1/output/0"].try_cast_to_typed().times
 
 for time, value in zip(continuous_times, continuous_values):
     print(f"{time}: {value}")

@@ -8,9 +8,9 @@ pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.debug)
 # Create a BlockEventsHandler
 block_events_handler = pysyslink_base.BlockEventsHandler()
 
-# Load the plugins using BlockTypeSupportPlugingLoader
-pluging_loader = pysyslink_base.BlockTypeSupportPlugingLoader()
-block_factories = pluging_loader.load_plugins("/usr/local/lib")
+# Load the plugins using BlockTypeSupportPluginLoader
+plugin_loader = pysyslink_base.BlockTypeSupportPluginLoader()
+block_factories = plugin_loader.load_plugins("/usr/local/lib")
 
 
 # Parse the simulation model from a YAML file

@@ -2,57 +2,52 @@ Blocks:
   - Id: sum1
     Name: Main Adder
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Adder
     Gains:
-      - 1.0
-      - 1.0
+      - 1.0 + 0.1i
+      - 1.0 + 0.1i
   - Id: sum2
     Name: Second Adder
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Adder
     Gains:
-      - 1.0
-      - 1.0
-      - 0.1
+      - 1.0 + 0.1i
+      - 1.0 + 0.1i
+      - 0.1 + 0.1i
   - Id: sum3
     Name: Second Adder
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Adder
     Gains:
-      - -0.11
-      - 1.0
+      - -0.11 + 0.1i
+      - 1.0 + 0.1i
   - Id: const1
     Name: Operand 1
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Constant
-    Value: 5.0
+    Value: 0.1i
   - Id: const2
     Name: Operand 2
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Constant
-    Value: 3.0
+    Value: 3.0 + 0.1i
   - Id: display1
     Name: Result
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Display
   - Id: accumulator1
     Name: Main accumulator
     BlockType: BasicCpp
+    SignalType: Complex
     BlockClass: BasicBlocks/Accumulator
     SampleTime: 0.2
-    InitialValue: -1.0
-  - Id: accumulator1
-    Name: Main accumulator
-    BlockType: BasicCpp
-    BlockClass: BasicBlocks/Accumulator
-    SampleTime: 0.2
-    InitialValue: -1.0
-  - Id: saturation1
-    Name: Saturation1
-    BlockType: Custom
-    BlockClass: Custom/Saturation
-    high_limit: 13.2
-    low_limit: -13.2
+    InitialValue: -1.0 + 0.1i
 
 Links:
   - Id: link1
@@ -69,7 +64,7 @@ Links:
     DestinationPortIdx: 1
   - Id: link3
     Name: link3
-    SourceBlockId: saturation1
+    SourceBlockId: sum2
     SourcePortIdx: 0
     DestinationBlockId: display1
     DestinationPortIdx: 0
@@ -110,9 +105,3 @@ Links:
     SourcePortIdx: 0
     DestinationBlockId: sum3
     DestinationPortIdx: 1
-  - Id: link9
-    Name: link3
-    SourceBlockId: sum2
-    SourcePortIdx: 0
-    DestinationBlockId: saturation1
-    DestinationPortIdx: 0
