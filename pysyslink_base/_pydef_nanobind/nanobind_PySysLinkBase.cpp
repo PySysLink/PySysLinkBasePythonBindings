@@ -54,6 +54,47 @@ using OdeStepReturnType = std::tuple<bool, std::vector<double>, double>;
 
 namespace PySysLinkBase {
 // helper type to enable overriding virtual methods in python
+class UnknownTypeSignalValue_trampoline : public UnknownTypeSignalValue
+{
+public:
+    NB_TRAMPOLINE(UnknownTypeSignalValue, 2);
+
+    const std::string GetTypeId() const override
+    {
+        NB_OVERRIDE_PURE_NAME(
+            "get_type_id", // function name (python)
+            GetTypeId // function name (c++)
+        );
+    }
+    std::unique_ptr<PySysLinkBase::UnknownTypeSignalValue> clone() const override
+    {
+        NB_OVERRIDE_PURE_NAME(
+            "clone", // function name (python)
+            clone // function name (c++)
+        );
+    }
+};
+}  // namespace PySysLinkBase
+
+namespace PySysLinkBase {
+// helper type to enable overriding virtual methods in python
+class UnknownTypeSignal_trampoline : public UnknownTypeSignal
+{
+public:
+    NB_TRAMPOLINE(UnknownTypeSignal, 1);
+
+    const std::string GetTypeId() const override
+    {
+        NB_OVERRIDE_PURE_NAME(
+            "get_type_id", // function name (python)
+            GetTypeId // function name (c++)
+        );
+    }
+};
+}  // namespace PySysLinkBase
+
+namespace PySysLinkBase {
+// helper type to enable overriding virtual methods in python
 class IBlockEventsHandler_trampoline : public IBlockEventsHandler
 {
 public:
@@ -91,47 +132,6 @@ public:
             "solve_step", // function name (python)
             SolveStep, // function name (c++)
             system, states_0, currentTime, timeStep // params
-        );
-    }
-};
-}  // namespace PySysLinkBase
-
-namespace PySysLinkBase {
-// helper type to enable overriding virtual methods in python
-class UnknownTypeSignalValue_trampoline : public UnknownTypeSignalValue
-{
-public:
-    NB_TRAMPOLINE(UnknownTypeSignalValue, 2);
-
-    const std::string GetTypeId() const override
-    {
-        NB_OVERRIDE_PURE_NAME(
-            "get_type_id", // function name (python)
-            GetTypeId // function name (c++)
-        );
-    }
-    std::unique_ptr<PySysLinkBase::UnknownTypeSignalValue> clone() const override
-    {
-        NB_OVERRIDE_PURE_NAME(
-            "clone", // function name (python)
-            clone // function name (c++)
-        );
-    }
-};
-}  // namespace PySysLinkBase
-
-namespace PySysLinkBase {
-// helper type to enable overriding virtual methods in python
-class UnknownTypeSignal_trampoline : public UnknownTypeSignal
-{
-public:
-    NB_TRAMPOLINE(UnknownTypeSignal, 1);
-
-    const std::string GetTypeId() const override
-    {
-        NB_OVERRIDE_PURE_NAME(
-            "get_type_id", // function name (python)
-            GetTypeId // function name (c++)
         );
     }
 };
@@ -189,12 +189,12 @@ public:
             keyName, value // params
         );
     }
-    const std::vector<PairOfDoubles > GetEvents(const std::shared_ptr<PySysLinkBase::SampleTime> sampleTime, double eventTime, std::vector<double> eventTimeStates) const override
+    const std::vector<PairOfDoubles > GetEvents(const std::shared_ptr<PySysLinkBase::SampleTime> sampleTime, double eventTime, std::vector<double> eventTimeStates, bool includeKnownEvents = false) const override
     {
         NB_OVERRIDE_NAME(
             "get_events", // function name (python)
             GetEvents, // function name (c++)
-            sampleTime, eventTime, eventTimeStates // params
+            sampleTime, eventTime, eventTimeStates, includeKnownEvents // params
         );
     }
     const std::vector<double> GetKnownEvents(const std::shared_ptr<PySysLinkBase::SampleTime> resolvedSampleTime, double simulationStartTime, double simulationEndTime) const override
@@ -247,24 +247,6 @@ public:
             "solve_step", // function name (python)
             SolveStep, // function name (c++)
             system, states_0, currentTime, timeStep // params
-        );
-    }
-};
-}  // namespace PySysLinkBase
-
-namespace PySysLinkBase {
-// helper type to enable overriding virtual methods in python
-class IBlockFactory_trampoline : public IBlockFactory
-{
-public:
-    NB_TRAMPOLINE(IBlockFactory, 1);
-
-    std::shared_ptr<PySysLinkBase::ISimulationBlock> CreateBlock(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<PySysLinkBase::IBlockEventsHandler> blockEventsHandler) override
-    {
-        NB_OVERRIDE_PURE_NAME(
-            "create_block", // function name (python)
-            CreateBlock, // function name (c++)
-            blockConfiguration, blockEventsHandler // params
         );
     }
 };
@@ -353,12 +335,12 @@ public:
             keyName, value // params
         );
     }
-    const std::vector<PairOfDoubles > GetEvents(const std::shared_ptr<PySysLinkBase::SampleTime> sampleTime, double eventTime, std::vector<double> eventTimeStates) const override
+    const std::vector<PairOfDoubles > GetEvents(const std::shared_ptr<PySysLinkBase::SampleTime> sampleTime, double eventTime, std::vector<double> eventTimeStates, bool includeKnownEvents = false) const override
     {
         NB_OVERRIDE_NAME(
             "get_events", // function name (python)
             GetEvents, // function name (c++)
-            sampleTime, eventTime, eventTimeStates // params
+            sampleTime, eventTime, eventTimeStates, includeKnownEvents // params
         );
     }
     const std::vector<double> GetKnownEvents(const std::shared_ptr<PySysLinkBase::SampleTime> resolvedSampleTime, double simulationStartTime, double simulationEndTime) const override
@@ -372,12 +354,31 @@ public:
 };
 }  // namespace PySysLinkBase
 
+namespace PySysLinkBase {
+// helper type to enable overriding virtual methods in python
+class IBlockFactory_trampoline : public IBlockFactory
+{
+public:
+    NB_TRAMPOLINE(IBlockFactory, 1);
+
+    std::shared_ptr<PySysLinkBase::ISimulationBlock> CreateBlock(std::map<std::string, ConfigurationValue> blockConfiguration, std::shared_ptr<PySysLinkBase::IBlockEventsHandler> blockEventsHandler) override
+    {
+        NB_OVERRIDE_PURE_NAME(
+            "create_block", // function name (python)
+            CreateBlock, // function name (c++)
+            blockConfiguration, blockEventsHandler // params
+        );
+    }
+};
+}  // namespace PySysLinkBase
+
 // </litgen_glue_code> // Autogenerated code end
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 void py_init_module_pysyslink_base(nb::module_& m)
 {
+using namespace PySysLinkBase;
 using namespace PySysLinkBase;
 using namespace PySysLinkBase;
 using namespace PySysLinkBase;
@@ -462,23 +463,33 @@ using namespace PySysLinkBase;
         ;
 
 
-    auto pyClassIBlockEventsHandler =
-        nb::class_<PySysLinkBase::IBlockEventsHandler, PySysLinkBase::IBlockEventsHandler_trampoline>
-            (m, "IBlockEventsHandler", "")
+    auto pyClassUnknownTypeSignalValue =
+        nb::class_<PySysLinkBase::UnknownTypeSignalValue, PySysLinkBase::UnknownTypeSignalValue_trampoline>
+            (m, "UnknownTypeSignalValue", "")
         .def(nb::init<>()) // implicit default constructor
-        .def("block_event_callback",
-            &PySysLinkBase::IBlockEventsHandler::BlockEventCallback, nb::arg("block_event"))
-        .def("register_value_update_block_event_callback",
-            &PySysLinkBase::IBlockEventsHandler::RegisterValueUpdateBlockEventCallback, nb::arg("callback"))
+        .def("get_type_id",
+            &PySysLinkBase::UnknownTypeSignalValue::GetTypeId)
+        .def("try_cast_to_typed",
+            [](PySysLinkBase::UnknownTypeSignalValue & self) { return self.TryCastToTyped<double>(); })
+        .def("try_cast_to_typed",
+            [](PySysLinkBase::UnknownTypeSignalValue & self) { return self.TryCastToTyped<std::complex<double> >(); })
+        .def("clone",
+            &PySysLinkBase::UnknownTypeSignalValue::clone)
         ;
 
 
-    auto pyClassIOdeStepSolver =
-        nb::class_<PySysLinkBase::IOdeStepSolver, PySysLinkBase::IOdeStepSolver_trampoline>
-            (m, "IOdeStepSolver", "")
+    auto pyClassConfigurationValueManager =
+        nb::class_<PySysLinkBase::ConfigurationValueManager>
+            (m, "ConfigurationValueManager", "")
         .def(nb::init<>()) // implicit default constructor
-        .def("solve_step",
-            &PySysLinkBase::IOdeStepSolver::SolveStep, nb::arg("system"), nb::arg("states_0"), nb::arg("current_time"), nb::arg("time_step"))
+        .def_static("try_get_configuration_value",
+            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<bool>), nb::arg("key_name"), nb::arg("configuration_values"))
+        .def_static("try_get_configuration_value",
+            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<int>), nb::arg("key_name"), nb::arg("configuration_values"))
+        .def_static("try_get_configuration_value",
+            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<double>), nb::arg("key_name"), nb::arg("configuration_values"))
+        .def_static("try_get_configuration_value",
+            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<std::complex<double> >), nb::arg("key_name"), nb::arg("configuration_values"))
         ;
 
 
@@ -500,45 +511,6 @@ using namespace PySysLinkBase;
             &PySysLinkBase::SpdlogManager::ConfigureDefaultLogger)
         .def_static("set_log_level",
             &PySysLinkBase::SpdlogManager::SetLogLevel, nb::arg("log_level"))
-        ;
-
-
-    auto pyClassConfigurationValueManager =
-        nb::class_<PySysLinkBase::ConfigurationValueManager>
-            (m, "ConfigurationValueManager", "")
-        .def(nb::init<>()) // implicit default constructor
-        .def_static("try_get_configuration_value",
-            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<bool>), nb::arg("key_name"), nb::arg("configuration_values"))
-        .def_static("try_get_configuration_value",
-            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<int>), nb::arg("key_name"), nb::arg("configuration_values"))
-        .def_static("try_get_configuration_value",
-            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<double>), nb::arg("key_name"), nb::arg("configuration_values"))
-        .def_static("try_get_configuration_value",
-            nb::overload_cast<std::string, std::map<std::string, ConfigurationValue> >(&PySysLinkBase::ConfigurationValueManager::TryGetConfigurationValue<std::complex<double> >), nb::arg("key_name"), nb::arg("configuration_values"))
-        ;
-
-
-    auto pyClassBlockEvent =
-        nb::class_<PySysLinkBase::BlockEvent>
-            (m, "BlockEvent", "")
-        .def_rw("event_type_id", &PySysLinkBase::BlockEvent::eventTypeId, "")
-        .def(nb::init<std::string>(),
-            nb::arg("event_type_id"))
-        ;
-
-
-    auto pyClassUnknownTypeSignalValue =
-        nb::class_<PySysLinkBase::UnknownTypeSignalValue, PySysLinkBase::UnknownTypeSignalValue_trampoline>
-            (m, "UnknownTypeSignalValue", "")
-        .def(nb::init<>()) // implicit default constructor
-        .def("get_type_id",
-            &PySysLinkBase::UnknownTypeSignalValue::GetTypeId)
-        .def("try_cast_to_typed",
-            [](PySysLinkBase::UnknownTypeSignalValue & self) { return self.TryCastToTyped<double>(); })
-        .def("try_cast_to_typed",
-            [](PySysLinkBase::UnknownTypeSignalValue & self) { return self.TryCastToTyped<std::complex<double> >(); })
-        .def("clone",
-            &PySysLinkBase::UnknownTypeSignalValue::clone)
         ;
 
 
@@ -587,53 +559,43 @@ using namespace PySysLinkBase;
         ;
 
 
-    auto pyClassPort =
-        nb::class_<PySysLinkBase::Port>
-            (m, "Port", "")
-        .def(nb::init<std::shared_ptr<PySysLinkBase::UnknownTypeSignalValue> >(),
-            nb::arg("value"))
-        .def("try_copy_value_to_port",
-            &PySysLinkBase::Port::TryCopyValueToPort, nb::arg("other_port"))
-        .def("set_value",
-            &PySysLinkBase::Port::SetValue, nb::arg("value"))
-        .def("get_value",
-            &PySysLinkBase::Port::GetValue)
-        .def("__eq__",
-            &PySysLinkBase::Port::operator==, nb::arg("rhs"))
+    auto pyClassBlockEvent =
+        nb::class_<PySysLinkBase::BlockEvent>
+            (m, "BlockEvent", "")
+        .def_rw("event_type_id", &PySysLinkBase::BlockEvent::eventTypeId, "")
+        .def(nb::init<std::string>(),
+            nb::arg("event_type_id"))
         ;
 
 
-    auto pyClassSignalValue_double =
-        nb::class_<PySysLinkBase::SignalValue<double>, PySysLinkBase::UnknownTypeSignalValue>
-            (m, "SignalValue_double", "")
-        .def(nb::init<double>(),
-            nb::arg("initial_payload"))
-        .def(nb::init<const PySysLinkBase::SignalValue<double > &>(),
-            nb::arg("other"))
-        .def("clone",
-            &PySysLinkBase::SignalValue<double >::clone)
-        .def("get_type_id",
-            &PySysLinkBase::SignalValue<double>::GetTypeId)
-        .def("get_payload",
-            &PySysLinkBase::SignalValue<double>::GetPayload)
-        .def("set_payload",
-            &PySysLinkBase::SignalValue<double>::SetPayload, nb::arg("new_payload"))
+    auto pyClassIBlockEventsHandler =
+        nb::class_<PySysLinkBase::IBlockEventsHandler, PySysLinkBase::IBlockEventsHandler_trampoline>
+            (m, "IBlockEventsHandler", "")
+        .def(nb::init<>()) // implicit default constructor
+        .def("block_event_callback",
+            &PySysLinkBase::IBlockEventsHandler::BlockEventCallback, nb::arg("block_event"))
+        .def("register_value_update_block_event_callback",
+            &PySysLinkBase::IBlockEventsHandler::RegisterValueUpdateBlockEventCallback, nb::arg("callback"))
         ;
-    auto pyClassSignalValue_complex_double =
-        nb::class_<PySysLinkBase::SignalValue<std::complex<double> >, PySysLinkBase::UnknownTypeSignalValue>
-            (m, "SignalValue_complex_double", "")
-        .def(nb::init<std::complex<double> >(),
-            nb::arg("initial_payload"))
-        .def(nb::init<const PySysLinkBase::SignalValue<std::complex<double> > &>(),
-            nb::arg("other"))
-        .def("clone",
-            &PySysLinkBase::SignalValue<std::complex<double> >::clone)
-        .def("get_type_id",
-            &PySysLinkBase::SignalValue<std::complex<double> >::GetTypeId)
-        .def("get_payload",
-            &PySysLinkBase::SignalValue<std::complex<double> >::GetPayload)
-        .def("set_payload",
-            &PySysLinkBase::SignalValue<std::complex<double> >::SetPayload, nb::arg("new_payload"))
+
+
+    auto pyClassIOdeStepSolver =
+        nb::class_<PySysLinkBase::IOdeStepSolver, PySysLinkBase::IOdeStepSolver_trampoline>
+            (m, "IOdeStepSolver", "")
+        .def(nb::init<>()) // implicit default constructor
+        .def("solve_step",
+            &PySysLinkBase::IOdeStepSolver::SolveStep, nb::arg("system"), nb::arg("states_0"), nb::arg("current_time"), nb::arg("time_step"))
+        ;
+
+
+    auto pyClassValueUpdateBlockEvent =
+        nb::class_<PySysLinkBase::ValueUpdateBlockEvent, PySysLinkBase::BlockEvent>
+            (m, "ValueUpdateBlockEvent", "")
+        .def_rw("simulation_time", &PySysLinkBase::ValueUpdateBlockEvent::simulationTime, "")
+        .def_rw("value_id", &PySysLinkBase::ValueUpdateBlockEvent::valueId, "")
+        .def_rw("value", &PySysLinkBase::ValueUpdateBlockEvent::value, "")
+        .def(nb::init<double, std::string, FullySupportedSignalValue>(),
+            nb::arg("simulation_time"), nb::arg("value_id"), nb::arg("value"))
         ;
 
 
@@ -673,18 +635,9 @@ using namespace PySysLinkBase;
         .def("register_calculate_output_callbacks",
             &PySysLinkBase::ISimulationBlock::RegisterCalculateOutputCallbacks, nb::arg("callback"))
         .def("get_events",
-            &PySysLinkBase::ISimulationBlock::GetEvents, nb::arg("sample_time"), nb::arg("event_time"), nb::arg("event_time_states"))
+            &PySysLinkBase::ISimulationBlock::GetEvents, nb::arg("sample_time"), nb::arg("event_time"), nb::arg("event_time_states"), nb::arg("include_known_events") = false)
         .def("get_known_events",
             &PySysLinkBase::ISimulationBlock::GetKnownEvents, nb::arg("resolved_sample_time"), nb::arg("simulation_start_time"), nb::arg("simulation_end_time"))
-        ;
-
-
-    auto pyClassSolverFactory =
-        nb::class_<PySysLinkBase::SolverFactory>
-            (m, "SolverFactory", "")
-        .def(nb::init<>()) // implicit default constructor
-        .def_static("create_ode_step_solver",
-            &PySysLinkBase::SolverFactory::CreateOdeStepSolver, nb::arg("solver_configuration"))
         ;
 
 
@@ -696,6 +649,31 @@ using namespace PySysLinkBase;
             &PySysLinkBase::BlockEventsHandler::BlockEventCallback, nb::arg("block_event"))
         .def("register_value_update_block_event_callback",
             &PySysLinkBase::BlockEventsHandler::RegisterValueUpdateBlockEventCallback, nb::arg("callback"))
+        ;
+
+
+    auto pyClassEulerForwardStepSolver =
+        nb::class_<PySysLinkBase::EulerForwardStepSolver, PySysLinkBase::IOdeStepSolver, PySysLinkBase::EulerForwardStepSolver_trampoline>
+            (m, "EulerForwardStepSolver", "")
+        .def(nb::init<>()) // implicit default constructor
+        .def("solve_step",
+            &PySysLinkBase::EulerForwardStepSolver::SolveStep, nb::arg("system"), nb::arg("states_0"), nb::arg("current_time"), nb::arg("time_step"))
+        ;
+
+
+    auto pyClassPort =
+        nb::class_<PySysLinkBase::Port>
+            (m, "Port", "")
+        .def(nb::init<std::shared_ptr<PySysLinkBase::UnknownTypeSignalValue> >(),
+            nb::arg("value"))
+        .def("try_copy_value_to_port",
+            &PySysLinkBase::Port::TryCopyValueToPort, nb::arg("other_port"))
+        .def("set_value",
+            &PySysLinkBase::Port::SetValue, nb::arg("value"))
+        .def("get_value",
+            &PySysLinkBase::Port::GetValue)
+        .def("__eq__",
+            &PySysLinkBase::Port::operator==, nb::arg("rhs"))
         ;
 
 
@@ -712,23 +690,46 @@ using namespace PySysLinkBase;
         ;
 
 
-    auto pyClassEulerForwardStepSolver =
-        nb::class_<PySysLinkBase::EulerForwardStepSolver, PySysLinkBase::IOdeStepSolver, PySysLinkBase::EulerForwardStepSolver_trampoline>
-            (m, "EulerForwardStepSolver", "")
+    auto pyClassSolverFactory =
+        nb::class_<PySysLinkBase::SolverFactory>
+            (m, "SolverFactory", "")
         .def(nb::init<>()) // implicit default constructor
-        .def("solve_step",
-            &PySysLinkBase::EulerForwardStepSolver::SolveStep, nb::arg("system"), nb::arg("states_0"), nb::arg("current_time"), nb::arg("time_step"))
+        .def_static("create_ode_step_solver",
+            &PySysLinkBase::SolverFactory::CreateOdeStepSolver, nb::arg("solver_configuration"))
         ;
 
 
-    auto pyClassValueUpdateBlockEvent =
-        nb::class_<PySysLinkBase::ValueUpdateBlockEvent, PySysLinkBase::BlockEvent>
-            (m, "ValueUpdateBlockEvent", "")
-        .def_rw("simulation_time", &PySysLinkBase::ValueUpdateBlockEvent::simulationTime, "")
-        .def_rw("value_id", &PySysLinkBase::ValueUpdateBlockEvent::valueId, "")
-        .def_rw("value", &PySysLinkBase::ValueUpdateBlockEvent::value, "")
-        .def(nb::init<double, std::string, FullySupportedSignalValue>(),
-            nb::arg("simulation_time"), nb::arg("value_id"), nb::arg("value"))
+    auto pyClassSignalValue_double =
+        nb::class_<PySysLinkBase::SignalValue<double>, PySysLinkBase::UnknownTypeSignalValue>
+            (m, "SignalValue_double", "")
+        .def(nb::init<double>(),
+            nb::arg("initial_payload"))
+        .def(nb::init<const PySysLinkBase::SignalValue<double > &>(),
+            nb::arg("other"))
+        .def("clone",
+            &PySysLinkBase::SignalValue<double >::clone)
+        .def("get_type_id",
+            &PySysLinkBase::SignalValue<double>::GetTypeId)
+        .def("get_payload",
+            &PySysLinkBase::SignalValue<double>::GetPayload)
+        .def("set_payload",
+            &PySysLinkBase::SignalValue<double>::SetPayload, nb::arg("new_payload"))
+        ;
+    auto pyClassSignalValue_complex_double =
+        nb::class_<PySysLinkBase::SignalValue<std::complex<double> >, PySysLinkBase::UnknownTypeSignalValue>
+            (m, "SignalValue_complex_double", "")
+        .def(nb::init<std::complex<double> >(),
+            nb::arg("initial_payload"))
+        .def(nb::init<const PySysLinkBase::SignalValue<std::complex<double> > &>(),
+            nb::arg("other"))
+        .def("clone",
+            &PySysLinkBase::SignalValue<std::complex<double> >::clone)
+        .def("get_type_id",
+            &PySysLinkBase::SignalValue<std::complex<double> >::GetTypeId)
+        .def("get_payload",
+            &PySysLinkBase::SignalValue<std::complex<double> >::GetPayload)
+        .def("set_payload",
+            &PySysLinkBase::SignalValue<std::complex<double> >::SetPayload, nb::arg("new_payload"))
         ;
 
 
@@ -737,29 +738,6 @@ using namespace PySysLinkBase;
             (m, "OutputPort", "")
         .def(nb::init<std::shared_ptr<PySysLinkBase::UnknownTypeSignalValue> >(),
             nb::arg("value"))
-        ;
-
-
-    auto pyClassIBlockFactory =
-        nb::class_<PySysLinkBase::IBlockFactory, PySysLinkBase::IBlockFactory_trampoline>
-            (m, "IBlockFactory", "")
-        .def(nb::init<>()) // implicit default constructor
-        .def("create_block",
-            &PySysLinkBase::IBlockFactory::CreateBlock, nb::arg("block_configuration"), nb::arg("block_events_handler"))
-        ;
-
-
-    auto pyClassPortLink =
-        nb::class_<PySysLinkBase::PortLink>
-            (m, "PortLink", "")
-        .def(nb::init<std::shared_ptr<PySysLinkBase::ISimulationBlock>, std::shared_ptr<PySysLinkBase::ISimulationBlock>, int, int>(),
-            nb::arg("origin_block"), nb::arg("sink_block"), nb::arg("origin_block_port_index"), nb::arg("sink_block_port_index"))
-        .def_rw("origin_block", &PySysLinkBase::PortLink::originBlock, "")
-        .def_rw("sink_block", &PySysLinkBase::PortLink::sinkBlock, "")
-        .def_rw("origin_block_port_index", &PySysLinkBase::PortLink::originBlockPortIndex, "")
-        .def_rw("sink_block_port_index", &PySysLinkBase::PortLink::sinkBlockPortIndex, "")
-        .def_static("parse_from_config",
-            &PySysLinkBase::PortLink::ParseFromConfig, nb::arg("link_configuration"), nb::arg("blocks"))
         ;
 
 
@@ -789,6 +767,38 @@ using namespace PySysLinkBase;
         ;
 
 
+    auto pyClassIBlockFactory =
+        nb::class_<PySysLinkBase::IBlockFactory, PySysLinkBase::IBlockFactory_trampoline>
+            (m, "IBlockFactory", "")
+        .def(nb::init<>()) // implicit default constructor
+        .def("create_block",
+            &PySysLinkBase::IBlockFactory::CreateBlock, nb::arg("block_configuration"), nb::arg("block_events_handler"))
+        ;
+
+
+    auto pyClassPortLink =
+        nb::class_<PySysLinkBase::PortLink>
+            (m, "PortLink", "")
+        .def(nb::init<std::shared_ptr<PySysLinkBase::ISimulationBlock>, std::shared_ptr<PySysLinkBase::ISimulationBlock>, int, int>(),
+            nb::arg("origin_block"), nb::arg("sink_block"), nb::arg("origin_block_port_index"), nb::arg("sink_block_port_index"))
+        .def_rw("origin_block", &PySysLinkBase::PortLink::originBlock, "")
+        .def_rw("sink_block", &PySysLinkBase::PortLink::sinkBlock, "")
+        .def_rw("origin_block_port_index", &PySysLinkBase::PortLink::originBlockPortIndex, "")
+        .def_rw("sink_block_port_index", &PySysLinkBase::PortLink::sinkBlockPortIndex, "")
+        .def_static("parse_from_config",
+            &PySysLinkBase::PortLink::ParseFromConfig, nb::arg("link_configuration"), nb::arg("blocks"))
+        ;
+
+
+    auto pyClassBlockTypeSupportPluginLoader =
+        nb::class_<PySysLinkBase::BlockTypeSupportPluginLoader>
+            (m, "BlockTypeSupportPluginLoader", "")
+        .def(nb::init<>()) // implicit default constructor
+        .def("load_plugins",
+            &PySysLinkBase::BlockTypeSupportPluginLoader::LoadPlugins, nb::arg("plugin_directory"))
+        ;
+
+
     auto pyClassSimulationModel =
         nb::class_<PySysLinkBase::SimulationModel>
             (m, "SimulationModel", "")
@@ -812,34 +822,6 @@ using namespace PySysLinkBase;
         ;
 
 
-    auto pyClassBlockTypeSupportPluginLoader =
-        nb::class_<PySysLinkBase::BlockTypeSupportPluginLoader>
-            (m, "BlockTypeSupportPluginLoader", "")
-        .def(nb::init<>()) // implicit default constructor
-        .def("load_plugins",
-            &PySysLinkBase::BlockTypeSupportPluginLoader::LoadPlugins, nb::arg("plugin_directory"))
-        ;
-
-
-    auto pyClassSimulationManager =
-        nb::class_<PySysLinkBase::SimulationManager>
-            (m, "SimulationManager", "")
-        .def(nb::init<std::shared_ptr<PySysLinkBase::SimulationModel>, std::shared_ptr<PySysLinkBase::SimulationOptions> >(),
-            nb::arg("simulation_model"), nb::arg("simulation_options"))
-        .def("run_simulation",
-            &PySysLinkBase::SimulationManager::RunSimulation)
-        ;
-
-
-    auto pyClassModelParser =
-        nb::class_<PySysLinkBase::ModelParser>
-            (m, "ModelParser", "")
-        .def(nb::init<>()) // implicit default constructor
-        .def_static("parse_from_yaml",
-            &PySysLinkBase::ModelParser::ParseFromYaml, nb::arg("filename"), nb::arg("block_factories"), nb::arg("block_events_handler"))
-        ;
-
-
     auto pyClassBasicOdeSolver =
         nb::class_<PySysLinkBase::BasicOdeSolver>
             (m, "BasicOdeSolver", "")
@@ -858,6 +840,29 @@ using namespace PySysLinkBase;
             &PySysLinkBase::BasicOdeSolver::GetNextTimeHit)
         .def("get_next_suggested_time_step",
             &PySysLinkBase::BasicOdeSolver::GetNextSuggestedTimeStep)
+        ;
+
+
+    auto pyClassModelParser =
+        nb::class_<PySysLinkBase::ModelParser>
+            (m, "ModelParser", "")
+        .def(nb::init<>()) // implicit default constructor
+        .def_static("parse_from_yaml",
+            &PySysLinkBase::ModelParser::ParseFromYaml, nb::arg("filename"), nb::arg("block_factories"), nb::arg("block_events_handler"))
+        ;
+
+
+    auto pyClassSimulationManager =
+        nb::class_<PySysLinkBase::SimulationManager>
+            (m, "SimulationManager", "")
+        .def(nb::init<std::shared_ptr<PySysLinkBase::SimulationModel>, std::shared_ptr<PySysLinkBase::SimulationOptions> >(),
+            nb::arg("simulation_model"), nb::arg("simulation_options"))
+        .def("run_simulation",
+            &PySysLinkBase::SimulationManager::RunSimulation)
+        .def("run_simulation_step",
+            &PySysLinkBase::SimulationManager::RunSimulationStep)
+        .def("get_simulation_output",
+            &PySysLinkBase::SimulationManager::GetSimulationOutput)
         ;
     // #endif
     ////////////////////    </generated_from:test.h>    ////////////////////

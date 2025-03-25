@@ -1,6 +1,8 @@
 import pysyslink_base
-
-
+import time
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg') 
 # Set the default logger configuration and log level
 pysyslink_base.SpdlogManager.configure_default_logger()
 pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.debug)
@@ -48,7 +50,20 @@ simulation_options.solvers_configuration = {
 
 # Create a SimulationManager and run the simulation
 simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulation_options)
-simulation_output = simulation_manager.run_simulation()
+
+initial_time = time.time()
+next_time_hit = 0.0
+try:
+    while True:
+        if time.time() - initial_time >= next_time_hit:
+            next_time_hit = simulation_manager.run_simulation_step()
+        if time.time() - initial_time >= 10.0:
+            # pysyslink_base.ISimulationBlock.find_block_by_id("const1", simulation_model.simulation_blocks).try_update_configuration_value("Value", 9.0) // Not working due to not updating constant blocks
+            pysyslink_base.ISimulationBlock.find_block_by_id("sum1", simulation_model.simulation_blocks).try_update_configuration_value("Gains", [1.0, -2.0, -2.0])
+except KeyboardInterrupt:
+    pass
+
+simulation_output = simulation_manager.get_simulation_output()
 
 # Access and print continuous values for integrator2/output
 continuous_values = simulation_output.signals["LoggedSignals"]["integrator2/output/0"].try_cast_to_typed().values
@@ -63,3 +78,7 @@ continuous_times_log = simulation_output.signals["LoggedSignals"]["display1/inpu
 
 for time, value in zip(continuous_times_log, continuous_values_log):
     print(f"{time}: {value}")
+
+plt.figure()
+plt.plot(continuous_times, continuous_values)
+plt.show()
