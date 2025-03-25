@@ -53,13 +53,15 @@ simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulati
 
 initial_time = time.time()
 next_time_hit = 0.0
+value_updated = False
 try:
     while True:
         if time.time() - initial_time >= next_time_hit:
             next_time_hit = simulation_manager.run_simulation_step()
-        if time.time() - initial_time >= 10.0:
-            # pysyslink_base.ISimulationBlock.find_block_by_id("const1", simulation_model.simulation_blocks).try_update_configuration_value("Value", 9.0) // Not working due to not updating constant blocks
-            pysyslink_base.ISimulationBlock.find_block_by_id("sum1", simulation_model.simulation_blocks).try_update_configuration_value("Gains", [1.0, -2.0, -2.0])
+        if time.time() - initial_time >= 10.0 and not value_updated:
+            value_updated = True
+            pysyslink_base.ISimulationBlock.find_block_by_id("const1", simulation_model.simulation_blocks).try_update_configuration_value("Value", 9.0)
+            # pysyslink_base.ISimulationBlock.find_block_by_id("sum1", simulation_model.simulation_blocks).try_update_configuration_value("Gains", [1.0, -2.0, -2.0])
 except KeyboardInterrupt:
     pass
 
