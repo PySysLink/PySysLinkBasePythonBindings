@@ -80,5 +80,9 @@
         "expected": "cpp",
         "format": "cpp",
         "stdfloat": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "dxdt",
+        "ublas"
+    ]
 }

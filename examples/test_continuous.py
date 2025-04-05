@@ -39,8 +39,11 @@ simulation_options.block_ids_input_or_output_and_indexes_to_log = [
 ]
 simulation_options.solvers_configuration = {
     "default": {
+        # "Type": "EulerBackward",
+        # "FirstTimeStep": 0.1,
+        # "ActivateEvents": False
         "Type": "odeint",
-        "ControlledSolver": "runge_kutta_fehlberg78",
+        "ControlledSolver": "rosenbrock4_controller",
         "AbsoluteTolerance": 1e-12,
         "RelativeTolerance": 1e-12 
     }
