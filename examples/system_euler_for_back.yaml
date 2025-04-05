@@ -10,7 +10,7 @@ Blocks:
     BlockType: BasicCpp
     BlockClass: BasicBlocks/Adder
     Gains:
-      - -10.0
+      - -20.0
 
   - Id: display1
     Name: Display
