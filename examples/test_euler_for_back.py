@@ -1,3 +1,4 @@
+import math
 import pysyslink_base
 import matplotlib.pyplot as plt
 import matplotlib
@@ -69,6 +70,50 @@ for i in range(3):
 
 
     plt.plot(continuous_times, continuous_values, label="Solver: {}".format(solvers[i]["default"]["Type"]))
+
+
+
+# Python calculation to check that it is correct
+
+# Differential equation parameters
+h = 0.1          # step size
+steps = 100       # number of steps (for t from 0 to 1)
+x0 = 1.0         # initial condition
+
+# Euler Forward: x_{n+1} = x_n + h * f(x_n)
+def euler_forward(x0, h, steps):
+    x_values = [x0]
+    for i in range(steps):
+        x_current = x_values[-1]
+        x_next = x_current + h * (-20 * x_current)  # f(x) = -20*x
+        x_values.append(x_next)
+    return x_values
+
+# Euler Backward: x_{n+1} = x_n + h * f(x_{n+1})
+# For f(x) = -20*x, the implicit equation is:
+#   x_{n+1} = x_n - 20*h*x_{n+1}  ->  x_{n+1}(1 + 20*h) = x_n
+#   Thus, x_{n+1} = x_n / (1 + 20*h)
+def euler_backward(x0, h, steps):
+    x_values = [x0]
+    for i in range(steps):
+        x_current = x_values[-1]
+        x_next = x_current / (1 + 20 * h)
+        x_values.append(x_next)
+    return x_values
+
+# Analytical solution: x(t) = exp(-20*t)
+def analytical_solution(t):
+    return math.exp(-20 * t)
+
+# Compute the solutions
+t_values = [i * h for i in range(steps + 1)]
+x_forward = euler_forward(x0, h, steps)
+x_backward = euler_backward(x0, h, steps)
+x_analytical = [analytical_solution(t) for t in t_values]
+plt.plot(t_values, x_analytical, 'ko-', label='Analytical')
+plt.plot(t_values, x_forward, 'bs--', label='Euler Forward')
+plt.plot(t_values, x_backward, 'r^--', label='Euler Backward')
+
 
 plt.legend()
 plt.show()
