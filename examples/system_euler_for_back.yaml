@@ -1,0 +1,41 @@
+Blocks:
+  - Id: integrator1
+    Name: Main Integrator
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Integrator
+    InitialValue: 1.0
+
+  - Id: sum1
+    Name: Adder
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Adder
+    Gains:
+      - -10.0
+
+  - Id: display1
+    Name: Display
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Display
+
+Links:
+
+  - Id: link2
+    Name: IntegratorToAdder
+    SourceBlockId: integrator1
+    SourcePortIdx: 0
+    DestinationBlockId: sum1
+    DestinationPortIdx: 0
+
+  - Id: link3
+    Name: FeedbackFromAdder
+    SourceBlockId: sum1
+    SourcePortIdx: 0
+    DestinationBlockId: integrator1
+    DestinationPortIdx: 0
+
+  - Id: link4
+    Name: AdderToDisplay
+    SourceBlockId: sum1
+    SourcePortIdx: 0
+    DestinationBlockId: display1
+    DestinationPortIdx: 0
