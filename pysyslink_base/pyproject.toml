@@ -37,11 +37,24 @@ wheel.packages = ["_stubs/pysyslink_base"]
 
 [tool.cibuildwheel]
 before-build = """
+if   command -v yum  &> /dev/null; then
+  yum install -y boost-devel
+elif command -v apk  &> /dev/null; then
+  apk add --no-cache boost-dev
+elif command -v apt-get &> /dev/null; then
+  apt-get update && apt-get install -y libboost-all-dev
+elif command -v brew &> /dev/null; then
+  brew update && brew install boost
+elif [ \"$CIBW_PLATFORM\" = \"windows\" ]; then
+  choco install -y boost-msvc-14.1
+fi
 yum install -y boost-devel
 mkdir -p build-core && cd build-core \
   && cmake ../pysyslink_base/src/cpp_libraries/PySysLinkBase \
   && make -j && make install
 """
+
+
 
 # Target python versions:
 build = ["cp310-*", "cp311-*", "cp312-*"]
