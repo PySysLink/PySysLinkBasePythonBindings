@@ -37,6 +37,7 @@ wheel.packages = ["_stubs/pysyslink_base"]
 
 [tool.cibuildwheel]
 before-build = """
+yum install -y boost-devel
 mkdir -p build-core && cd build-core \
   && cmake ../pysyslink_base/src/cpp_libraries/PySysLinkBase \
   && make -j && make install
