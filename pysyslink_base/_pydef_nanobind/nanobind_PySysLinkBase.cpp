@@ -35,7 +35,6 @@
 #include <PySysLinkBase/BlockEvents/BlockEvent.h>
 #include <PySysLinkBase/BlockEvents/ValueUpdateBlockEvent.h>
 #include <PySysLinkBase/ContinuousAndOde/BasicOdeSolver.h>
-#include <PySysLinkBase/ContinuousAndOde/ContinuousState.h>
 #include <PySysLinkBase/ContinuousAndOde/SolverFactory.h>
 #include <PySysLinkBase/ContinuousAndOde/OdeintStepSolver.h>
 #include <PySysLinkBase/ContinuousAndOde/EulerForwardStepSolver.h>
