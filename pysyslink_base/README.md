@@ -12,7 +12,7 @@ PySysLinkBase is an open-source Simulink-like tool that lets you:
 - Extend functionality via plug‑ins that provide support for different block types.
 - Interface with Python to allow scripting, rapid prototyping, and integration into other Python-based scientific or control engineering workflows.
 
-The Python bindings are auto‑generated using [litgen](https://pthom.github.io/litgen), based on the [litgen_template](https://github.com/pthom/litgen_template) repository. This template uses either pybind11 or nanobind (configurable via an environment variable) to produce a native Python module.
+The Python bindings are auto‑generated using [litgen](https://pthom.github.io/litgen), based on the [litgen_template](https://github.com/pthom/litgen_template) repository. This template uses either pybind11 or nanobind (configurable via an environment variable) to produce a native Python module. The bindings for PySysLinkBase have been created using nanobind, and they perform ~6 times slower than the original C++ implementation (which is not bad at all).
 
 ## Installation
 

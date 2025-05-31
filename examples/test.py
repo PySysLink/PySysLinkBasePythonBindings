@@ -3,7 +3,7 @@ import pysyslink_base
 
 # Set the default logger configuration and log level
 pysyslink_base.SpdlogManager.configure_default_logger()
-pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.debug)
+pysyslink_base.SpdlogManager.set_log_level(pysyslink_base.LogLevel.off)
 
 # Create a BlockEventsHandler
 block_events_handler = pysyslink_base.BlockEventsHandler()
@@ -49,15 +49,15 @@ simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulati
 simulation_output = simulation_manager.run_simulation()
 
 # Access and print continuous values for integrator2/output
-continuous_values = simulation_output.signals["LoggedSignals"]["accumulator1/output/0"].try_cast_to_typed().values
-continuous_times = simulation_output.signals["LoggedSignals"]["accumulator1/output/0"].try_cast_to_typed().times
+# continuous_values = simulation_output.signals["LoggedSignals"]["accumulator1/output/0"].try_cast_to_typed().values
+# continuous_times = simulation_output.signals["LoggedSignals"]["accumulator1/output/0"].try_cast_to_typed().times
 
-for time, value in zip(continuous_times, continuous_values):
-    print(f"{time}: {value}")
+# for time, value in zip(continuous_times, continuous_values):
+#     print(f"{time}: {value}")
 
-# Access and print continuous values for display1/input
-continuous_values_log = simulation_output.signals["LoggedSignals"]["display1/input/0"].try_cast_to_typed().values
-continuous_times_log = simulation_output.signals["LoggedSignals"]["display1/input/0"].try_cast_to_typed().times
+# # Access and print continuous values for display1/input
+# continuous_values_log = simulation_output.signals["LoggedSignals"]["display1/input/0"].try_cast_to_typed().values
+# continuous_times_log = simulation_output.signals["LoggedSignals"]["display1/input/0"].try_cast_to_typed().times
 
-for time, value in zip(continuous_times_log, continuous_values_log):
-    print(f"{time}: {value}")
+# for time, value in zip(continuous_times_log, continuous_values_log):
+#     print(f"{time}: {value}")

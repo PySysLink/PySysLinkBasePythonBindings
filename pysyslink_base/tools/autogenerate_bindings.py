@@ -47,7 +47,7 @@ def my_litgen_options() -> litgen.LitgenOptions:
     options.class_template_options.add_specialization("Signal", ["double", "std::complex<double>"])
     options.class_template_options.add_specialization("SignalValue", ["double", "std::complex<double>"])
 
-    options.class_exclude_by_name__regex = "^ISimulationBlockWithContinuousStatesPython$"
+    options.class_exclude_by_name__regex = "^ISimulationBlockWithContinuousStatesPython$|^WriteTask$"
     # options.class_template_options.add_specialization("OdeintStepSolver", ["double"])
 
     # Set to True if you want the stub file to be formatted with black

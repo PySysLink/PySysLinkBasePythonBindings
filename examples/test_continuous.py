@@ -34,8 +34,7 @@ simulation_options.run_in_natural_time = False
 simulation_options.natural_time_speed_multiplier = 1
 simulation_options.block_ids_input_or_output_and_indexes_to_log = [
     ("const1", "output", 0),
-    ("integrator2", "output", 0),
-    ("display1", "input", 0)
+    ("integrator1", "output", 0)
 ]
 simulation_options.solvers_configuration = {
     "default": {
@@ -44,8 +43,8 @@ simulation_options.solvers_configuration = {
         # "ActivateEvents": False
         "Type": "odeint",
         "ControlledSolver": "rosenbrock4_controller",
-        "AbsoluteTolerance": 1e-12,
-        "RelativeTolerance": 1e-12 
+        "AbsoluteTolerance": 1e-8,
+        "RelativeTolerance": 1e-8 
     }
 }
 
@@ -54,15 +53,20 @@ simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulati
 simulation_output = simulation_manager.run_simulation()
 
 # Access and print continuous values for integrator2/output
-continuous_values = simulation_output.signals["LoggedSignals"]["integrator2/output/0"].try_cast_to_typed().values
-continuous_times = simulation_output.signals["LoggedSignals"]["integrator2/output/0"].try_cast_to_typed().times
+continuous_values = simulation_output.signals["Displays"]["display1"].try_cast_to_typed().values
+continuous_times = simulation_output.signals["Displays"]["display1"].try_cast_to_typed().times
 
 for time, value in zip(continuous_times, continuous_values):
     print(f"{time}: {value}")
 
 # Access and print continuous values for display1/input
-continuous_values_log = simulation_output.signals["LoggedSignals"]["display1/input/0"].try_cast_to_typed().values
-continuous_times_log = simulation_output.signals["LoggedSignals"]["display1/input/0"].try_cast_to_typed().times
+continuous_values_log = simulation_output.signals["LoggedSignals"]["integrator1/output/0"].try_cast_to_typed().values
+continuous_times_log = simulation_output.signals["LoggedSignals"]["integrator1/output/0"].try_cast_to_typed().times
+
 
 for time, value in zip(continuous_times_log, continuous_values_log):
     print(f"{time}: {value}")
+
+
+print(len(continuous_values_log))
+print(len(continuous_times_log))

@@ -79,7 +79,11 @@
         "source_location": "cpp",
         "expected": "cpp",
         "format": "cpp",
-        "stdfloat": "cpp"
+        "stdfloat": "cpp",
+        "csignal": "cpp",
+        "any": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp"
     },
     "cSpell.words": [
         "dxdt",
