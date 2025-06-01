@@ -11,6 +11,7 @@
 #include <nanobind/stl/variant.h>
 #include <nanobind/ndarray.h>
 #include <nanobind/stl/pair.h>
+#include <nanobind/stl/function.h>
 
 #include <PySysLinkBase/SimulationModel.h>
 #include <PySysLinkBase/ISimulationBlock.h>
