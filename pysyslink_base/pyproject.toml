@@ -38,13 +38,13 @@ wheel.packages = ["_stubs/pysyslink_base"]
 [tool.cibuildwheel]
 before-build = """
 if   command -v yum  &> /dev/null; then
-  yum install -y boost-devel
+  yum install -y boost-devel hdf5-devel
 elif command -v apk  &> /dev/null; then
   apk add --no-cache boost-dev
 elif command -v apt-get &> /dev/null; then
-  apt-get update && apt-get install -y libboost-all-dev
+  apt-get update && apt-get install -y libboost-all-dev libhdf5-dev
 elif command -v brew &> /dev/null; then
-  brew update && brew install boost
+  brew update && brew install boost hdf5
 elif [ \"$CIBW_PLATFORM\" = \"windows\" ]; then
   choco install -y boost-msvc-14.1
 fi
