@@ -70,7 +70,16 @@ jobs:
 
       - name: Install cibuildwheel
         run: pip install cibuildwheel
+
+      - name: CMake version
+        run: cmake --version
+
       - name: Build wheels for all platforms
+        env:
+          CIBW_BEFORE_ALL_LINUX: |
+            pip install cmake==3.26.4
+            cmake --version
+          CIBW_BUILD_VERBOSITY: 1  # Optional, for debugging
         run: |
           cibuildwheel pysyslink_base/ --output-dir dist-wheels
       
