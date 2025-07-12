@@ -77,9 +77,14 @@ jobs:
       - name: Build wheels for all platforms
         env:
           CIBW_BEFORE_ALL_LINUX: |
-            pip install cmake==3.26.4
+            python3 -m pip install cmake==3.26.4
             cmake --version
-          CIBW_BUILD_VERBOSITY: 1  # Optional, for debugging
+          CIBW_BEFORE_ALL_MACOS: |
+            python3 -m pip install cmake==3.26.4
+            cmake --version
+          CIBW_BEFORE_ALL_WINDOWS: |
+            python -m pip install cmake==3.26.4
+            cmake --version
         run: |
           cibuildwheel pysyslink_base/ --output-dir dist-wheels
       

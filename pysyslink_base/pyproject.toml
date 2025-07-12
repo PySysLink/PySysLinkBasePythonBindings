@@ -48,13 +48,10 @@ elif command -v brew &> /dev/null; then
 elif [ \"$CIBW_PLATFORM\" = \"windows\" ]; then
   choco install -y boost-msvc-14.1
 fi
-yum install -y boost-devel
-mkdir -p build-core && cd build-core \
-  && cmake ../pysyslink_base/src/cpp_libraries/PySysLinkBase \
-  && make -j && make install
 """
 
-
+# Set this to make sure Python-installed CMake is used
+environment = { PATH = "$HOME/.local/bin:$PATH" }
 
 # Target python versions:
 build = ["cp310-*", "cp311-*", "cp312-*"]
