@@ -88,5 +88,6 @@
     "cSpell.words": [
         "dxdt",
         "ublas"
-    ]
+    ],
+    "cmake.sourceDirectory": "/home/pello/PySysLinkBasePythonBindings/pysyslink_base/src/cpp_libraries/PySysLinkBase/build/_deps/argparse-src/test"
 }

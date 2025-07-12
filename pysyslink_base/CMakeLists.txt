@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15...3.27)
-project(pysyslink_base VERSION "0.0.1")
+project(pysyslink_base VERSION "0.1.0")
 
 
 set(CMAKE_CXX_STANDARD 17)
@@ -30,6 +30,9 @@ set(python_module_sources
 #     _pysyslink_base.cpython-312-x86_64-linux-gnu.so on Linux
 #     _pysyslink_base.cp312-win_amd64.pyd on Windows)
 nanobind_add_module(_pysyslink_base ${python_module_sources})
+
+target_link_libraries(_pysyslink_base PRIVATE PySysLinkBase spdlog::spdlog Eigen3::Eigen yaml-cpp HighFive ${HDF5_LIBRARIES})
+
 # Call litgen_setup_module to generate the python wrapper around the native module
 litgen_setup_module(
     # The C++ library for which we are building bindings

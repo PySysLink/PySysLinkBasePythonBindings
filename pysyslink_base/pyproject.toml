@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "pysyslink_base"
-version = "0.0.1"
+version = "0.1.0"
 description="pysyslink-base, example of bindings with litgen"
 readme = "README.md"
 authors = [ { name = "My Name", email = "me@email.com" } ]

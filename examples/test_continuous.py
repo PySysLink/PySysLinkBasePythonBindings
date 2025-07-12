@@ -10,7 +10,10 @@ block_events_handler = pysyslink_base.BlockEventsHandler()
 
 # Load the plugins using BlockTypeSupportPluginLoader
 plugin_loader = pysyslink_base.BlockTypeSupportPluginLoader()
-block_factories = plugin_loader.load_plugins("/usr/local/lib")
+
+plugin_configuration = {"BasicCppSupport/libraryPluginPath": "/usr/local/lib/pysyslink_plugins"}
+
+block_factories = plugin_loader.load_plugins("/usr/local/lib/pysyslink_plugins/block_type_supports/", plugin_configuration)
 
 
 # Parse the simulation model from a YAML file
