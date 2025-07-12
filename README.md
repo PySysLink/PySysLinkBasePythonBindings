@@ -38,6 +38,10 @@ To install the Python bindings, you must first have a working installation of Py
    pip install nanobind
    pip install -v pysyslink_base
    ```
+   Of from pypi:
+   ```
+   python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pysyslink-base
+   ```
 
 ## Using the Bindings
 
