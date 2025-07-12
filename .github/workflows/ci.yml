@@ -75,16 +75,6 @@ jobs:
         run: cmake --version
 
       - name: Build wheels for all platforms
-        env:
-          CIBW_BEFORE_ALL_LINUX: |
-            python3 -m pip install cmake==3.26.4
-            cmake --version
-          CIBW_BEFORE_ALL_MACOS: |
-            python3 -m pip install cmake==3.26.4
-            cmake --version
-          CIBW_BEFORE_ALL_WINDOWS: |
-            python -m pip install cmake==3.26.4
-            cmake --version
         run: |
           cibuildwheel pysyslink_base/ --output-dir dist-wheels
       
