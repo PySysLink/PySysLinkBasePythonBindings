@@ -8,7 +8,6 @@ set(CMAKE_BUILD_TYPE "Debug")
 
 include(litgen_cmake/litgen_cmake.cmake)
 
-
 # Build our example C++ library (PySysLinkBase) that we want to bind to python
 add_subdirectory(src/cpp_libraries/PySysLinkBase)
 
@@ -30,6 +29,11 @@ set(python_module_sources
 #     _pysyslink_base.cpython-312-x86_64-linux-gnu.so on Linux
 #     _pysyslink_base.cp312-win_amd64.pyd on Windows)
 nanobind_add_module(_pysyslink_base ${python_module_sources})
+
+target_include_directories(_pysyslink_base
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp_libraries/PySysLinkBase/src
+)
 
 target_link_libraries(_pysyslink_base PRIVATE PySysLinkBase spdlog::spdlog Eigen3::Eigen yaml-cpp HighFive ${HDF5_LIBRARIES})
 
