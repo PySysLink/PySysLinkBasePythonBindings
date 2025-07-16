@@ -5,7 +5,8 @@ on:
     branches: [ '**' ]     
     tags: [ 'v*' ]   
   pull_request:
-    branches: [ '**' ]           
+    branches: [ '**' ]         
+  workflow_dispatch:    
 
 jobs:
   build-and-test:
@@ -112,4 +113,4 @@ jobs:
           TWINE_USERNAME: __token__               # The literal string __token__ tells Twine to use an API token
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          twine upload dist-wheels/*
+          twine upload --skip-existing dist-wheels/*
