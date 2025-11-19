@@ -18,7 +18,7 @@ block_factories = plugin_loader.load_plugins("/usr/local/lib/pysyslink_plugins/b
 
 # Parse the simulation model from a YAML file
 simulation_model = pysyslink_base.ModelParser.parse_from_yaml(
-                        "system_from_editor.yaml", block_factories, block_events_handler
+                        "system_python_block.yaml", block_factories, block_events_handler
                     )
 
 
@@ -55,21 +55,42 @@ simulation_options.solvers_configuration = {
 simulation_manager = pysyslink_base.SimulationManager(simulation_model, simulation_options)
 simulation_output = simulation_manager.run_simulation()
 
-# Access and print continuous values for integrator2/output
-continuous_values = simulation_output.signals["Displays"]["display1"].try_cast_to_typed().values
-continuous_times = simulation_output.signals["Displays"]["display1"].try_cast_to_typed().times
+def print_display(block_id):
+    """Print the values of a Display block."""
+    disp = simulation_output.signals["Displays"][block_id].try_cast_to_typed()
+    times = disp.times
+    values = disp.values
 
-for time, value in zip(continuous_times, continuous_values):
-    print(f"{time}: {value}")
-
-# Access and print continuous values for display1/input
-continuous_values_log = simulation_output.signals["LoggedSignals"]["integrator1/output/0"].try_cast_to_typed().values
-continuous_times_log = simulation_output.signals["LoggedSignals"]["integrator1/output/0"].try_cast_to_typed().times
-
-
-for time, value in zip(continuous_times_log, continuous_values_log):
-    print(f"{time}: {value}")
+    print(f"\n=== Display {block_id} ===")
+    for t, v in zip(times, values):
+        print(f"{t:.4f}   {v}")
+    print(f"Total samples: {len(values)}")
 
 
-print(len(continuous_values_log))
-print(len(continuous_times_log))
+def print_logged(signal_name):
+    """Print values of a logged internal signal (e.g. integrator1/output/0)."""
+    log = simulation_output.signals["LoggedSignals"][signal_name].try_cast_to_typed()
+    times = log.times
+    values = log.values
+
+    print(f"\n=== Logged signal {signal_name} ===")
+    for t, v in zip(times, values):
+        print(f"{t:.4f}   {v}")
+    print(f"Total samples: {len(values)}")
+
+
+# --------------------------------------
+# 1. Main display (output of integrator2)
+# --------------------------------------
+print_display("display1")
+
+# --------------------------------------
+# 2. Logged output of integrator1
+# --------------------------------------
+print_logged("integrator1/output/0")
+
+# --------------------------------------
+# 3. Python block outputs displayed
+# --------------------------------------
+print_display("display2")   # Python output #1
+print_display("display3")   # Python output #2

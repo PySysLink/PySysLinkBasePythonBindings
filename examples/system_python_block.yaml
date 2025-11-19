@@ -1,0 +1,107 @@
+Blocks:
+  - Id: const1
+    Name: Operand 1
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Constant
+    Value: 5.0
+  - Id: display1
+    Name: Result
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Display
+  - Id: integrator1
+    Name: Main integrator
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Integrator
+  - Id: integrator2
+    Name: Main integrator
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Integrator
+  - Id: sum1
+    Name: Main Adder
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Adder
+    Gains:
+      - 1.0
+      - -1.0
+      - -1.0
+  - Id: python_block
+    Name: Python block
+    BlockType: BasicPython
+    PythonModule: python_module
+    PythonClass: MyPythonBlock
+    NumInputs: 2
+    NumOutputs: 2
+    Gain: 1.5
+  - Id: display2
+    Name: Python Output 1
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Display
+  - Id: display3
+    Name: Python Output 2
+    BlockType: BasicCpp
+    BlockClass: BasicBlocks/Display
+
+Links:
+  - Id: link1
+    Name: link1
+    SourceBlockId: const1
+    SourcePortIdx: 0
+    DestinationBlockId: sum1
+    DestinationPortIdx: 0
+  - Id: link2
+    Name: link2
+    SourceBlockId: sum1
+    SourcePortIdx: 0
+    DestinationBlockId: integrator1
+    DestinationPortIdx: 0
+  - Id: link3
+    Name: link3
+    SourceBlockId: integrator1
+    SourcePortIdx: 0
+    DestinationBlockId: integrator2
+    DestinationPortIdx: 0
+  - Id: link4
+    Name: link4
+    SourceBlockId: integrator2
+    SourcePortIdx: 0
+    DestinationBlockId: display1
+    DestinationPortIdx: 0
+  - Id: link5
+    Name: link5
+    SourceBlockId: integrator1
+    SourcePortIdx: 0
+    DestinationBlockId: sum1
+    DestinationPortIdx: 1
+  - Id: link6
+    Name: link4
+    SourceBlockId: integrator2
+    SourcePortIdx: 0
+    DestinationBlockId: sum1
+    DestinationPortIdx: 2
+  - Id: link7
+    Name: link7
+    SourceBlockId: integrator1
+    SourcePortIdx: 0
+    DestinationBlockId: python_block
+    DestinationPortIdx: 0
+  - Id: link8
+    Name: link8
+    SourceBlockId: integrator2
+    SourcePortIdx: 0
+    DestinationBlockId: python_block
+    DestinationPortIdx: 1
+  - Id: link9
+    Name: link9
+    SourceBlockId: python_block
+    SourcePortIdx: 0
+    DestinationBlockId: display2
+    DestinationPortIdx: 0
+  - Id: link10
+    Name: link10
+    SourceBlockId: python_block
+    SourcePortIdx: 1
+    DestinationBlockId: display3
+    DestinationPortIdx: 0
+
+    
+  
